@@ -4,10 +4,10 @@ import unittest
 import numpy as np
 from os.path import abspath, join
 
-sys.path.append('./classes')
-from classes.deshadower import Deshadower
+sys.path.append('../classes')
+from deshadower import Deshadower
 
-PATH = "./test_files/test_images"
+PATH = "./test_files"
 PATH_HOMO = abspath( join(PATH, "homography.png") )
 
 

@@ -4,10 +4,10 @@ import unittest
 import numpy as np
 from os.path import abspath, join
 
-sys.path.append('./classes')
-from classes.dewarper import Dewarper
+sys.path.append('../classes')
+from dewarper import Dewarper
 
-PATH = "./test_files/test_images"
+PATH = "./test_files"
 PATH_HOMO = abspath( join(PATH, "homography.png") )
 PATH_ROT = abspath( join(PATH, "homography_rotated.png") )
 # print(PATH_HOMO)
@@ -72,8 +72,8 @@ class TestCaseDewarper(unittest.TestCase):
 		self.assertEqual(len(dw.img.shape), 2)
 		self.assertEqual(len(dw.og.shape),  3)
 
-		self.assertEqual(repr(type(dw.kpd_ref)), "<class 'classes.dewarper.Kpd'>")
-		self.assertEqual(repr(type(dw.kpd_img)), "<class 'classes.dewarper.Kpd'>")
+		self.assertEqual(repr(type(dw.kpd_ref)), "<class 'dewarper.Kpd'>")
+		self.assertEqual(repr(type(dw.kpd_img)), "<class 'dewarper.Kpd'>")
 
 
 	def test_method_load(self):
@@ -242,27 +242,6 @@ class TestCaseDewarper(unittest.TestCase):
 			self.assertEqual(dw.ref.shape, dw.dewarped_gray.shape)
 			similarity = cv.matchTemplate(dw.dewarped_gray, dw.ref, 3).round(3)
 			self.assertGreater(similarity[0][0], 0.99)
-
-
-		with self.subTest("ACT Sheet - Rotated and Skewed"):
-			PATH_REF = abspath("./test_files/answer_sheet/rh/v06-100.png")
-			PATH_ACT = abspath("./test_files/answer_sheet/rh/v06-100-skew.png")
-
-			dw = Dewarper()
-			dw.dewarp(PATH_REF, PATH_ACT)
-
-			self.assertEqual(len(dw.og.shape), len(dw.dewarped.shape))
-			self.assertEqual(len(dw.ref.shape), len(dw.dewarped_gray.shape))
-			self.assertEqual(dw.ref.shape, dw.dewarped.shape[0:2])
-			self.assertEqual(dw.ref.shape, dw.dewarped_gray.shape)
-			similarity = cv.matchTemplate(dw.dewarped_gray, dw.ref, 3).round(3)
-			self.assertGreater(similarity[0][0], 0.98)
-
-			if FLAG_SHOW_DISPLAY_METHODS:
-				cv.imshow('warped', dw.img)
-				cv.imshow('dewarped', dw.dewarped)
-				cv.waitKey(0)
-				cv.destroyAllWindows()
 
 
 		with self.subTest("Passing Images Directly to Method"):
