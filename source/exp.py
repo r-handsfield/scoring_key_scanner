@@ -14,6 +14,68 @@ from classes.sheetScanner import Sheet
 
 PATH = "./images"
 
+# Functions #########################
+def extract_text(source):
+    """
+    
+    Extracts question numbers and answers from an image.
+
+    Parameters
+    ----------
+    source : CV_Image
+
+    """
+    # img = cv2.imread(image_paths[1])  # Math Key
+    # src = img[94:94+585, 75:75+298]
+    src = source
+    col = src[77:77+508, 0:0+60]
+    colG = cv2.cvtColor(col, cv2.COLOR_BGR2GRAY)
+    colI = cv2.threshold(colG, 250, 255, cv2.THRESH_BINARY_INV)[1]
+    cv2.imshow("Answer Key", colG)
+    cv2.waitKey(0)
+
+    rgb = cv2.cvtColor(col, cv2.COLOR_BGR2RGB)
+    data = pt.image_to_data(rgb, config="--psm 11", output_type=Output.DICT)
+    print(len(data['text']), len(data['top']), len(data['left']))
+    print(data.keys(), '\n')
+    # print(data['text'], data['left'], data['top'], sep='\t')
+    text, conf = data['text'], data['conf']
+    X,Y,W,H = data['left'], data['top'], data['width'], data['height']
+
+    # Delete entries with low confidence
+    for i in range( (len(X)-1), -1, -1 ):
+        ar = round(float(W[i])/H[i], 3)
+        if conf[i] < 1:
+            del(conf[i])
+            del(text[i])
+            del(X[i])
+            del(Y[i])
+            del(W[i])
+            del(H[i])
+        elif ar < 1 or ar > 2:
+            del(conf[i])
+            del(text[i])
+            del(X[i])
+            del(Y[i])
+            del(W[i])
+            del(H[i])
+
+    for i in range(len(X)):
+        x,y,w,h = X[i], Y[i], W[i], H[i]
+        ar = round(float(w)/h, 3)
+        print(f"{i}\tconf = {conf[i]}\ttext = {text[i]} \t x = {x}\ty = {y}\tw = {w}\th = {h}\tar = {ar}")
+        img = col.copy()
+        cv2.rectangle(img, (x, y), (x+w, y+h), (0,0,255), 1)
+        # cv2.rectangle(img, (1, 1), (50, 59), (0,0,255), 1)
+        cv2.imshow("Text", img)
+        if cv2.waitKey(0) == 27: 
+            cv2.destroyAllWindows()
+            break
+
+
+# END Functions #########################
+
+
 image_paths = []
 for f in os.listdir(PATH):
     if f.split('.')[1] == 'png':
@@ -120,54 +182,12 @@ for i,c in enumerate(candidates):
 
 
 # Answer Key Column
-### Extract text of qNums and Answers
-m1 = cv2.cvtColor(m1, cv2.COLOR_GRAY2BGR)
-col = m1[77:77+508, 0:0+60]
-colG = cv2.cvtColor(col, cv2.COLOR_BGR2GRAY)
-colI = cv2.threshold(colG, 250, 255, cv2.THRESH_BINARY_INV)[1]
-cv2.imshow("Answer Key", colG)
-cv2.waitKey(0)
+img = cv2.imread(image_paths[1])
+src = img[94:94+585, 75:75+298]
+extract_text(src)
 
-rgb = cv2.cvtColor(col, cv2.COLOR_BGR2RGB)
-data = pt.image_to_data(rgb, config="--psm 11", output_type=Output.DICT)
-print(len(data['text']), len(data['top']), len(data['left']))
-print(data.keys(), '\n')
-# print(data['text'], data['left'], data['top'], sep='\t')
-text, conf = data['text'], data['conf']
-X,Y,W,H = data['left'], data['top'], data['width'], data['height']
-
-# Delete entries with low confidence
-for i in range( (len(X)-1), -1, -1 ):
-    ar = round(float(W[i])/H[i], 3)
-    if conf[i] < 1:
-        del(conf[i])
-        del(text[i])
-        del(X[i])
-        del(Y[i])
-        del(W[i])
-        del(H[i])
-    elif ar < 1 or ar > 2:
-        del(conf[i])
-        del(text[i])
-        del(X[i])
-        del(Y[i])
-        del(W[i])
-        del(H[i])
-
-for i in range(len(X)):
-    x,y,w,h = X[i], Y[i], W[i], H[i]
-    ar = round(float(w)/h, 3)
-    print(f"{i}\tconf = {conf[i]}\ttext = {text[i]} \t x = {x}\ty = {y}\tw = {w}\th = {h}\tar = {ar}")
-    img = col.copy()
-    cv2.rectangle(img, (x, y), (x+w, y+h), (0,0,255), 1)
-    # cv2.rectangle(img, (1, 1), (50, 59), (0,0,255), 1)
-    cv2.imshow("Text", img)
-    if cv2.waitKey(0) == 27: 
-        cv2.destroyAllWindows()
-        break
-
-cv2.waitKey(0)
 sys.exit()
+
 
 
 #############################################################################
