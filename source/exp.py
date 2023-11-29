@@ -4,6 +4,7 @@ import os, sys, cv2
 import pickle
 import numpy as np
 from os.path import join, abspath
+from dataclasses import dataclass
 import pytesseract as pt
 from pytesseract import Output
 
@@ -14,7 +15,21 @@ from classes.sheetScanner import Sheet
 
 PATH = "./images"
 
+
+
 # Functions #########################
+@dataclass 
+class Line():
+    def __init__(contour):
+        x,y,w,h = cv2.boundingRect(contour)
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.area = w*h
+        self.ratio = round(float(w)/h, 5) # aspect ratio
+
+
 def extract_text(source):
     """
     
@@ -94,11 +109,9 @@ def extract_lines(image, show=False):
         if float(w)/float(h) < 8 or w > 25:
             del(candidates[i])
 
-    Y = [None]*len(candidates)
     # Show line contours in column
     for i,c in enumerate(candidates):
         x,y,w,h = cv2.boundingRect(c)
-        Y[i] = y
         area = cv2.contourArea(c)
         ratio = float(w)/float(h)
         print(f"{i}\tx = {x}  y = {y}\t w = {w}  h = {h}\t area = {area}   aspect = {round(ratio,5)}")
@@ -107,14 +120,31 @@ def extract_lines(image, show=False):
     
     cv2.imshow("C", pic)
     
-    print(len(np.unique(Y)))
-    print(np.unique(Y), '\n\n')
-    print(Y)
     if cv2.waitKey(0) == 27:  # Esc will kill the method
         cv2.destroyAllWindows()
         # break
 
     return candidates
+
+def extract_row_coords(y_coords):
+    """
+    Returns the coordinates of each row within the Key.
+
+    Parameters
+    ----------
+    y_coords : list[int]
+        A llist of y-coordinates
+
+    Returns
+    -------
+    dict : {int:int}
+        Key = a y-coordinate
+        Val = a question number
+    """
+    rows = np.unique(y_coords)
+    qNums = range(1, len(y_coords)+1)
+
+    return dict(zip(rows, qNums))
 
 
 
@@ -163,7 +193,15 @@ image_paths = sorted(image_paths)
 img = cv2.imread(image_paths[1], flags=cv2.IMREAD_GRAYSCALE)
 # m1 = img[94:94+585, 75:75+298]
 m1 = img[94:94+585, 75:75+298]
-extract_lines(m1)
+lines = extract_lines(m1)
+
+Y = [None]*len(lines)
+for i,c in enumerate(lines):
+    x,y,w,h = cv2.boundingRect(c)
+    Y[i] = y
+
+rows = extract_row_coords(Y)
+print(rows)
 sys.exit(0)
 m1i = cv2.threshold(m1, 250, 255, cv2.THRESH_BINARY_INV)[1]
 cv2.imshow("Ref", m1i)
