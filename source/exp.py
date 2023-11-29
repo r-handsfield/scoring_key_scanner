@@ -73,6 +73,51 @@ def extract_text(source):
             break
 
 
+def extract_lines(image, show=False):
+    """
+    image : CV_Image
+    """
+    if len(image.shape) < 3:
+        gray = image
+        image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+    else:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY2)
+
+    inv = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)[1]
+
+    candidates = list(cv2.findContours(inv, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0])
+
+    # Delete point contours
+    for i in range( (len(candidates)-1), -1, -1 ):
+        c = candidates[i]
+        x,y,w,h = cv2.boundingRect(c)
+        if float(w)/float(h) < 8 or w > 25:
+            del(candidates[i])
+
+    Y = [None]*len(candidates)
+    # Show line contours in column
+    for i,c in enumerate(candidates):
+        x,y,w,h = cv2.boundingRect(c)
+        Y[i] = y
+        area = cv2.contourArea(c)
+        ratio = float(w)/float(h)
+        print(f"{i}\tx = {x}  y = {y}\t w = {w}  h = {h}\t area = {area}   aspect = {round(ratio,5)}")
+        pic = image.copy()
+        cv2.drawContours(pic, [c], -1, (0,0,255), 1)
+    
+    cv2.imshow("C", pic)
+    
+    print(len(np.unique(Y)))
+    print(np.unique(Y), '\n\n')
+    print(Y)
+    if cv2.waitKey(0) == 27:  # Esc will kill the method
+        cv2.destroyAllWindows()
+        # break
+
+    return candidates
+
+
+
 # END Functions #########################
 
 
@@ -116,7 +161,10 @@ image_paths = sorted(image_paths)
 
 ### Table in page
 img = cv2.imread(image_paths[1], flags=cv2.IMREAD_GRAYSCALE)
+# m1 = img[94:94+585, 75:75+298]
 m1 = img[94:94+585, 75:75+298]
+extract_lines(m1)
+sys.exit(0)
 m1i = cv2.threshold(m1, 250, 255, cv2.THRESH_BINARY_INV)[1]
 cv2.imshow("Ref", m1i)
 cv2.waitKey(0)
@@ -181,10 +229,23 @@ for i,c in enumerate(candidates):
         break
 
 
-# Answer Key Column
-img = cv2.imread(image_paths[1])
-src = img[94:94+585, 75:75+298]
-extract_text(src)
+
+
+### Identify row coordinates
+m1 = cv2.cvtColor(m1, cv2.COLOR_GRAY2BGR)
+for i in range(30):
+    x, w = 5, 20+278
+    y, h = int(88+i*16.65), 13
+    pic = m1.copy()
+    cv2.rectangle(pic, (x, y), (x+w, y+h), (0,0,255), 1)
+    cv2.imshow("Y", pic)
+    if cv2.waitKey(0) == 27:  # Esc will kill the method
+        cv2.destroyAllWindows()
+        break
+# Extract text from Answer Key Column
+# img = cv2.imread(image_paths[1])
+# src = img[94:94+585, 75:75+298]
+# extract_text(src)
 
 sys.exit()
 
