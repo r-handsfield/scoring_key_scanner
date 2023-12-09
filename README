@@ -2,7 +2,7 @@
 
 ###Motivation
 
-The ACT exam contains questions from several different categories in each exam section. MAchine readable answer keys are trivial to create by hand: one can manually convert the printed key to JSON in about 5 minutes. The question categories however are more numerous and complex. It is not practical to manually create a machine readable object for each set of categories. This project attempts to use computer vision and optical character recognition (OCR) to extract the categorical information from the printed scoring keys and convert it to JSON.
+The ACT exam contains questions from several different categories in each exam section. Machine readable answer keys are trivial to create by hand: one can manually convert the printed key to JSON in about 5 minutes. The question categories however are more numerous and complex. It is not practical to manually create a machine readable object for each set of categories. This project attempts to use computer vision and optical character recognition (OCR) to extract the categorical information from the printed scoring keys and convert it to JSON.
 
 ###Experiments
 ####1 Extracting a Scoring Key from a Page
@@ -11,6 +11,14 @@ The scoring keys are printed on the final pages of published ACT exams. Each key
 1) Extract all the closed contours from the page
 2) Sort by the contours by size and keep the 5 largest candidates
 3) Visually inspect the candidates to determine the location and dimensions (in pixels) of the scoreing key boxes.
+
+####2 Identifying Rows and Columns within the Scoring Key
+Because OCR text extration has proven unreliable, I assume that rows and columns are uniform within each Key and will use their positions and dimensions to locate features within each row and column. Each column is situated in its own rectangular box; it should be easy to locate each box as a contour. Columns have slightly different headings in the different test sections.
+
+1) Extract all closed contours from the Scoring Key image
+2) Delete small contours from the list of candidates
+3) Sort the remaining candidate contours by size
+4) Inspect those to determine locating coordinates
 
 
 
