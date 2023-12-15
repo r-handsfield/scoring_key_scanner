@@ -1,6 +1,6 @@
 # Experiment 1
 # Extract images of the scoring keys from their pages.
-import cv2, io
+import cv2, io, sys
 import numpy as np
 from PIL import Image
 from pypdf import PdfReader
@@ -8,10 +8,11 @@ from os.path import join, abspath
 from collections import namedtuple
 from pdf2image import convert_from_path
 
+
 PATH_E = abspath("./images/ske.pdf")
-# PATH_E = abspath("./images/skm.pdf")
-# PATH_E = abspath("./images/skr.pdf")
-# PATH_E = abspath("./images/sks.pdf")
+# PATH_M = abspath("./images/skm.pdf")
+# PATH_R = abspath("./images/skr.pdf")
+# PATH_S = abspath("./images/sks.pdf")
 
 ### Convert PDF to CV_Image
 pdf_image = convert_from_path(PATH_E)[0]  # <-- PIL Image

@@ -1,3 +1,7 @@
+# Experiment 2:  Extract columns from the Scoring Key
+# This approach works for English, Reading, and Science sections,
+# but not for the Math section.
+
 import cv2, io, sys
 import numpy as np
 from PIL import Image
@@ -7,11 +11,15 @@ from collections import namedtuple
 from pdf2image import convert_from_path
 from imutils.contours import sort_contours
 
+sys.path.append('classes')
+
+from scoreKey import ScoreKey
+
 PATH_E = abspath("./images/ske.pdf")
 PATH_M = abspath("./images/skm.pdf")
 PATH_R = abspath("./images/skr.pdf")
 PATH_S = abspath("./images/sks.pdf")
-PATH = PATH_M
+PATH = PATH_S
 
 ### Convert PDF to CV_Image
 pdf_image = convert_from_path(PATH)[0]  # <-- PIL Image
@@ -20,19 +28,18 @@ pdf_image = np.asarray(pdf_image, dtype='uint8')  # <-- np array
 pdf_image = cv2.cvtColor(pdf_image, cv2.COLOR_RGB2BGR)
 
 # From Experiment 1:
-Box = namedtuple('Box', ['x', 'y', 'w', 'h', 'area', 'aspect'])
 score_keys = dict.fromkeys(['e1', 'e2', 'm1', 'm2', 'r1', 'r2', 's1', 's2'])
-score_keys['e1'] = Box( 74, 223, 164, 708, 116112, 0.23164)
-score_keys['e2'] = Box(277, 223, 163, 691, 112633, 0.23589)
-score_keys['m1'] = Box( 74,  94, 300, 586, 175800, 0.51195)
-score_keys['m2'] = Box(476,  94, 300, 586, 175800, 0.51195)
-score_keys['r1'] = Box( 74,  94, 164, 407,  66748, 0.40295)
-score_keys['r2'] = Box(277,  94, 163, 407,  66341, 0.40049)
-score_keys['s1'] = Box( 74, 594, 164, 407,  66748, 0.40295)
-score_keys['s2'] = Box(277, 594, 163, 407,  66341, 0.40049)
+score_keys['e1'] = ScoreKey( 74, 223, 164, 708, 116112, 0.23164)
+score_keys['e2'] = ScoreKey(277, 223, 163, 691, 112633, 0.23589)
+score_keys['m1'] = ScoreKey( 74,  94, 300, 586, 175800, 0.51195)
+score_keys['m2'] = ScoreKey(476,  94, 300, 586, 175800, 0.51195)
+score_keys['r1'] = ScoreKey( 74,  94, 164, 407,  66748, 0.40295)
+score_keys['r2'] = ScoreKey(277,  94, 163, 407,  66341, 0.40049)
+score_keys['s1'] = ScoreKey( 74, 594, 164, 407,  66748, 0.40295)
+score_keys['s2'] = ScoreKey(277, 594, 163, 407,  66341, 0.40049)
 
 ### Subset Score Key from page
-sk = score_keys['m1']
+sk = score_keys['s2']
 x, y, w, h = sk.x, sk.y, sk.w, sk.h
 sk_image = pdf_image[y:y+h, x:x+w]
 gray = cv2.cvtColor(sk_image, cv2.COLOR_BGR2GRAY)
@@ -69,14 +76,4 @@ for c in candidates:
     if cv2.waitKey(0) == 27:  # Esc will kill the display loop
         cv2.destroyAllWindows()
         break
-
-e1 = dict.fromkeys(['key', 'pow', 'kla', 'cse'])
-e2 = dict.fromkeys(['key', 'pow', 'kla', 'cse'])
-# e2['key'] = Box()
-# x = 1  y = 66  w = 59  h = 624	 area = 36816   aspect = 0.09455
-# x = 60  y = 66  w = 34  h = 624	 area = 21216   aspect = 0.05449
-# x = 94  y = 66  w = 34  h = 624	 area = 21216   aspect = 0.05449
-# x = 128  y = 66  w = 34  h = 624	 area = 21216   aspect = 0.05449
-
-#### The code above works for ERS, but not M 
 
