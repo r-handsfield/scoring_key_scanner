@@ -76,6 +76,10 @@ class ScoreKey(Box):
 
     aspect : float
         The aspect ratio (w/h) of the Scoring Key
+
+    columns : list[Column]
+        All the columns of the Scoring Key, ordered from left to right. A 
+        "column" is the box containing the data; it excludes the heading box.
     """
 
 

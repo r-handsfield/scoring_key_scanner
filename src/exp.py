@@ -96,7 +96,8 @@ def extract_lines(image, show=False):
         gray = image
         image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
     else:
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY2)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY2)
 
     inv = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)[1]
 
