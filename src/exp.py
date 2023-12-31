@@ -111,12 +111,13 @@ def extract_lines(image, show=False):
             del(candidates[i])
 
     # Show line contours in column
+    pic = image.copy()
     for i,c in enumerate(candidates):
         x,y,w,h = cv2.boundingRect(c)
         area = cv2.contourArea(c)
         ratio = float(w)/float(h)
         print(f"{i}\tx = {x}  y = {y}\t w = {w}  h = {h}\t area = {area}   aspect = {round(ratio,5)}")
-        pic = image.copy()
+        # pic = image.copy()
         cv2.drawContours(pic, [c], -1, (0,0,255), 1)
     
     cv2.imshow("C", pic)
@@ -126,6 +127,7 @@ def extract_lines(image, show=False):
         # break
 
     return candidates
+
 
 def extract_row_coords(y_coords):
     """
@@ -195,6 +197,7 @@ img = cv2.imread(image_paths[1], flags=cv2.IMREAD_GRAYSCALE)
 # m1 = img[94:94+585, 75:75+298]
 m1 = img[94:94+585, 75:75+298]
 lines = extract_lines(m1)
+sys.exit()
 
 Y = [None]*len(lines)
 for i,c in enumerate(lines):
@@ -236,6 +239,7 @@ for i,c in enumerate(candidates):
         cv2.destroyAllWindows()
         break
 
+sys.exit()
 ### Column in Table
 m1 = cv2.cvtColor(m1, cv2.COLOR_BGR2GRAY)
 col = m1[77:77+508, 263:263+35]
