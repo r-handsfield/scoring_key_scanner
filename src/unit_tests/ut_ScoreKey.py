@@ -2,15 +2,15 @@ import sys
 import unittest
 
 sys.path.append('../classes')
-from scoreKey import Box, ScoreKey, Column
+from scoreKey import Box, ScoreKey, Column, Row
 
 class TestCaseBox(unittest.TestCase):
 
     def setUp(self):
-        self.box = Box(1, 2, 3, 4, 12, 0.75)
+        self.box = Box(1, 2, 3, 4)
         
     def test_instantiation(self):
-        b = Box(1, 2, 3, 4, 12, 0.75)
+        b = Box(1, 2, 3, 4)
         self.assertIsInstance(b, Box)
 
 
@@ -32,27 +32,66 @@ class TestCaseBox(unittest.TestCase):
 
 ### END Box
 
+
 class TestCaseScoreKey(unittest.TestCase):
 
     def setUp(self):
-        self.scoreKey = ScoreKey(1, 2, 3, 4, 12, 0.75)
+        self.scoreKey = ScoreKey(1, 2, 3, 4)
 
     def test_instantiation(self):
-        sk = ScoreKey(1, 2, 3, 4, 12, 0.75)
+        sk = ScoreKey(1, 2, 3, 4)
         self.assertIsInstance(sk, ScoreKey)
+
+        self.assertEqual(sk.x, 1)
+        self.assertEqual(sk.y, 2)
+        self.assertEqual(sk.w, 3)
+        self.assertEqual(sk.h, 4)
+        self.assertEqual(sk.area, 12)
+        self.assertEqual(sk.aspect, 0.75)
+        self.assertEqual(sk.rows, [])
+        self.assertEqual(sk.columns, [])
 
 ### End ScoreKey
   
+
 class TestCaseColumn(unittest.TestCase):
 
     def setUp(self):
-        self.column = Column(1, 2, 3, 4, 12, 0.75)
+        self.column = Column("Key", 1, 2, 3, 4)
 
     def test_instantiation(self):
-        col = Column(1, 2, 3, 4, 12, 0.75)
+        col = Column("Key", 1, 2, 3, 4)
         self.assertIsInstance(col, Column)
 
+        self.assertEqual(col.x, 1)
+        self.assertEqual(col.y, 2)
+        self.assertEqual(col.w, 3)
+        self.assertEqual(col.h, 4)
+        self.assertEqual(col.area, 12)
+        self.assertEqual(col.aspect, 0.75)
+        self.assertEqual(col.label, "Key")
+
 ### End Column
+
+
+
+class TestCaseRow(unittest.TestCase):
+
+    def setUp(self):
+        self.row = Row(0, 10, 20, 26, 250, 16)
+
+    def test_instantiation(self):
+        row = Row(0, 10, 20, 26, 250, 16)
+        self.assertIsInstance(row, Row)
+
+        self.assertEqual(row.ordinal, 0)
+        self.assertEqual(row.x, 10)
+        self.assertEqual(row.y, 20)
+        self.assertEqual(row.yM, 26)
+        self.assertEqual(row.w, 250)
+        self.assertEqual(row.h, 16)
+
+### End Row
   
 
 def suite():
@@ -63,6 +102,8 @@ def suite():
     suite.addTest(TestCaseScoreKey('test_instantiation'))
 
     suite.addTest(TestCaseColumn('test_instantiation'))
+
+    suite.addTest(TestCaseRow('test_instantiation'))
 
     return suite
 
