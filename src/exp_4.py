@@ -80,5 +80,43 @@ for q in range(38):
 #     4, 70, 76, 16.66 px   
 # S: x0, y0, yL, vStride
 #     4, 70, 76, 16.66 px   
- 
 
+
+# Find line positions
+# lines = cv2.HoughLinesP(inv, 20, np.pi/2, 50, minLineLength=15)
+lines = cv2.HoughLinesP(inv, 20, np.pi/2, 1, minLineLength=1)
+print(type(lines) , len(lines))
+print(type(lines[0]) , len(lines[0]))
+# print(lines[0])
+
+pic = sk_image.copy()
+for i in range(len(lines)):
+    # pic = sk_image.copy()
+    l = lines[i][0]
+    x1, y1, x2, y2 = l[0], l[1], l[2], l[3]
+    w, h = abs(x2-x1), abs(y2-y1)
+
+    # if w/(h+.001) < 1:  # Skip verticals
+    #     continue
+    # elif w > 5:  # Skip long lines 
+    #     continue
+    # elif y1 < 80 or y2 < 80:
+    #     continue
+    # elif y1 > 244 or y2 > 244:
+    #     continue
+    # elif x1 < 60 or x2 < 60:
+    #     continue
+
+
+    cv2.line(pic, (x1, y1), (x2, y2), (0,0,255), 1, cv2.LINE_AA )
+    print(l)
+
+    cv2.imshow("Lines", pic)
+
+    # if cv2.waitKey(0) == 27:  # Esc will kill the display loop
+    #     cv2.destroyAllWindows()
+    #     break
+
+if cv2.waitKey(0) == 27:  # Esc will kill the display loop
+    cv2.destroyAllWindows()
+ 

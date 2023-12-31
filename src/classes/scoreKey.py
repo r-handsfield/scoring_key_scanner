@@ -75,13 +75,21 @@ class ScoreKey(Box):
         All the rows of the Scoring Key, ordered from top to bottom.
     """
 
-    def __init__(self, x, y, w, h):
+    def __init__(self, x, y, w, h, area=None, aspect=None):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
-        self.area = w*h
-        self.aspect = w/h
+        
+        if area is None:
+            self.area = w*h
+        else:
+            self.area = area
+
+        if aspect is None:
+            self.aspect = w/h
+        else:
+            self.aspect = aspect
         
         self.rows : list = []
         self.columns : list = []
