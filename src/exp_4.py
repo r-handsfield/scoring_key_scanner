@@ -1,4 +1,18 @@
 # Experiment 4:  Extract question positions and line markers from a column.
+#
+# Results:
+# E: x0, y0, yL, vStride
+#     4, 70, 76, 16.66 px   
+# M: x0, y0, yL, vStride
+#     4, 81, 87, 16.66 px   
+# R: x0, y0, yL, vStride
+#     4, 70, 76, 16.66 px   
+# S: x0, y0, yL, vStride
+#     4, 70, 76, 16.66 px   
+# 
+# By trial and error, we determine that the row height is 16.66 px; the 
+# starting position is the same for ERS table data, and a bit lower for
+# M table data.
 
 import cv2, io, sys
 import numpy as np
@@ -67,36 +81,4 @@ for q in range(38):
 # S: x0, y0, yL, vStride
 #     4, 70, 76, 16.66 px   
  
-
-# cv2.imshow("Score Key Img", sk_image)
-# cv2.waitKey(0)
-sys.exit()
-
-### Find the interior contours and extract the columns
-candidates = list(cv2.findContours(inv, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[0])
-print(len(candidates))
-# delete candidates that are too small to be a column
-for i in range( (len(candidates)-1), -1, -1 ):
-    c = candidates[i]
-    area = cv2.contourArea(c)
-    if area < 10000:
-        del(candidates[i])
-
-print(len(candidates))
-
-# Sort the columns left-to-rigth
-candidates = sort_contours(candidates, method='left-to-right')[0]
-
-for c in candidates:
-    x,y,w,h = cv2.boundingRect(c)
-    area = w*h  # More accurate than cv2.contourArea
-    ratio = float(w)/float(h)
-    print(f"x = {x}  y = {y}  w = {w}  h = {h}   area = {area}   aspect = {round(ratio,5)}")
-    pic = sk_image.copy()
-    cv2.drawContours(pic, [c], -1, (0,0,255), 1)
-    cv2.imshow("C", pic)
-
-    if cv2.waitKey(0) == 27:  # Esc will kill the display loop
-        cv2.destroyAllWindows()
-        break
 
