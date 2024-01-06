@@ -72,11 +72,14 @@ class Dewarper():
 		else:
 			pass
 
+
 		# Convert images to grayscale if necessary
 		if isinstance(self.ref, np.ndarray) and len(self.ref.shape) == 3:
 			self.ref = cv.cvtColor(self.ref, cv.COLOR_BGR2GRAY)
 		if isinstance(self.og, np.ndarray) and len(self.og.shape) == 3:
 			self.img = cv.cvtColor(self.og, cv.COLOR_BGR2GRAY)
+		else:
+			self.img = self.og
 
 		self.kpd_ref = self.Kpd(None, None)  # Keypoint descriptors
 		self.kpd_img = self.Kpd(None, None)
