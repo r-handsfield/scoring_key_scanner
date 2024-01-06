@@ -13,6 +13,18 @@ from pdf2image import convert_from_path
 PATH = abspath("./images/all.pdf")
 print(PATH)
 
+# ap = argparse.ArgumentParser()
+# ap.add_argument('--pdf_path', '-p', required=True, help='path/to/pdf_file')
+# ap.add_argument('--page_nums', '-n', required=True, help='page numbers, format = first-last')
+# args = ap.parse_args()
+
+# PATH = args.pdf_path
+
+# pages = args.page_nums
+# first = int(pages.split('-')[0])
+# last = int(pages.split('-')[1])
+# print(first, last)
+
 ### Get PDF pages
 pils = convert_from_path(PATH)#[0]  # <-- PIL Image
 for i, p in enumerate(pils):
