@@ -46,7 +46,7 @@ for i, p in enumerate(pils):
     # refs[i].show()
     p = p.resize((850, 1100))
     p = np.asanyarray(p, dtype='uint8')
-    # p = cv2.cvtColor(p, cv2.COLOR_RGB2BGR)
+    p = cv2.cvtColor(p, cv2.COLOR_RGB2BGR)
     
     d = Deshadower(p)
     p = d.deshadow()
