@@ -4,6 +4,11 @@ from collections import namedtuple
 from matplotlib import pyplot as plt
 from typing import Union, List, Tuple, Dict, NoReturn
 
+# Define type hints for the OpenCV contour and OpenCV image 
+CV_Contour = 'np.ndarray[np.ndarray[np.ndarray[int]]]'
+CV_Image = 'np.ndarray[int]'
+
+
 class Dewarper():
 	"""
 	Contains methods for dewarping a rotated & skewed image of a sheet of 
@@ -68,9 +73,9 @@ class Dewarper():
 			pass
 
 		# Convert images to grayscale if necessary
-		if isinstance(self.ref, np.ndarray):
+		if isinstance(self.ref, np.ndarray) and len(self.ref.shape) == 3:
 			self.ref = cv.cvtColor(self.ref, cv.COLOR_BGR2GRAY)
-		if isinstance(self.og, np.ndarray):
+		if isinstance(self.og, np.ndarray) and len(self.og.shape) == 3:
 			self.img = cv.cvtColor(self.og, cv.COLOR_BGR2GRAY)
 
 		self.kpd_ref = self.Kpd(None, None)  # Keypoint descriptors
@@ -257,7 +262,7 @@ class Dewarper():
 	def dewarp(self, 
 			   ref: Union[str, 'np.ndarray[int]']=None, 
 			   img: Union[str, 'np.ndarray[int]']=None
-	) -> NoReturn:
+	) -> CV_Image:
 		"""
 		Wrapper method: performs full dewarping pipeline. Passing arguments
 		overwrites any images currently stored in the dewarper.
