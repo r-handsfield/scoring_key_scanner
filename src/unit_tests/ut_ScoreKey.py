@@ -1,5 +1,7 @@
-import sys
+import sys, cv2
 import unittest
+import numpy as np
+from PIL import Image
 
 sys.path.append('../classes')
 from scoreKey import Box, ScoreKey, Column, Row
@@ -36,7 +38,11 @@ class TestCaseBox(unittest.TestCase):
 class TestCaseScoreKey(unittest.TestCase):
 
     def setUp(self):
-        self.scoreKey = ScoreKey(1, 2, 3, 4)
+        self.scoreKey = ScoreKey( 74, 223, 164, 708, 116112, 0.23164)
+        page_image = Image.open("../images/ske.png")
+        page_image = page_image.convert('RGB')
+        page_image = page_image.resize((850,1100))
+        self.page_image = np.asarray(page_image, dtype='uint8')
 
     def test_instantiation(self):
         sk = ScoreKey(1, 2, 3, 4)
@@ -50,6 +56,21 @@ class TestCaseScoreKey(unittest.TestCase):
         self.assertEqual(sk.aspect, 0.75)
         self.assertEqual(sk.rows, [])
         self.assertEqual(sk.columns, [])
+
+        self.assertIsNone(sk.image)
+
+    def method_load_image(self):
+        sk = self.scoreKey
+        sk.load_image(self.page_image)
+
+        self.assertIsInstance(sk.image, np.ndarray)
+
+        height, width = sk.image.shape[0], sk.image.shape[1]
+        self.assertEqual(height, sk.h)
+        self.assertEqual(width, sk.w)
+
+        
+
 
 ### End ScoreKey
   
@@ -100,6 +121,7 @@ def suite():
     suite.addTest(TestCaseBox('test_members'))
 
     suite.addTest(TestCaseScoreKey('test_instantiation'))
+    suite.addTest(TestCaseScoreKey('method_load_image'))
 
     suite.addTest(TestCaseColumn('test_instantiation'))
 

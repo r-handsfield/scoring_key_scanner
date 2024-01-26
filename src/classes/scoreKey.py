@@ -1,7 +1,10 @@
 # scoreKey.py
 # A class representing the printed Scoring Keys
 
+import cv2
 from dataclasses import dataclass
+
+CV_Image = 'np.ndarray[int]'
 
 
 @dataclass
@@ -73,13 +76,18 @@ class ScoreKey(Box):
 
     rows : list[Row]
         All the rows of the Scoring Key, ordered from top to bottom.
+
+    image : CV_Image
+        The image of one of the Scoring Key boxes.
     """
 
-    def __init__(self, x, y, w, h, area=None, aspect=None):
+    def __init__(self, x, y, w, h, area=None, aspect=None) -> None:
         self.x = x
         self.y = y
         self.w = w
         self.h = h
+
+        self.image = None
         
         if area is None:
             self.area = w*h
@@ -95,6 +103,28 @@ class ScoreKey(Box):
         self.columns : list = []
 
     pass
+
+
+    def load_image(self, image: CV_Image) -> None:
+        """
+        Subsets a Scoring Key box from an 850 x 1100 px page image and stores
+        it as a CV_Image (np.ndarray) in the 'image' attribute."
+
+        Parameters
+        ----------
+        image : CV_Image
+            An 850 x 1100 px full page image containing the Scoring Key box.
+
+        Returns
+        -------
+        CV_Image
+            The image of the Scoring Key box
+        """
+        x, y, w, h = self.x, self.y, self.w, self.h
+        score_key_box = image[y:y+h, x:x+w]
+        self.image = score_key_box
+
+        return score_key_box
 
 
 
