@@ -100,7 +100,7 @@ class ScoreKey(Box):
             self.aspect = aspect
         
         self.rows : list = []
-        self.columns : list = []
+        self.columns : dict = {}
 
     pass
 
@@ -166,7 +166,6 @@ class Column(Box):
         self.aspect = w/h
         
         self.rows = []
-        self.columns = []
 
     pass
 
