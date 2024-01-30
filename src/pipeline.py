@@ -46,17 +46,19 @@ for i, p in enumerate(pils):
     p = np.asanyarray(p, dtype='uint8')
     p = cv2.cvtColor(p, cv2.COLOR_RGB2BGR)
     
-    d = Deshadower(p)
-    p = d.deshadow()
+    # Introduces color artifacts
+    # d = Deshadower(p)
+    # p = d.deshadow()
 
     d = Dewarper(refs[i], p)
     d.dewarp()
     pils[i] = d.dewarped
-    # print(type(p), type(pils[i]))
-    # cv2.imshow("Page", p)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+#     print(type(p), type(pils[i]))
+#     cv2.imshow("Page", p)
+#     cv2.waitKey(0)
+# cv2.destroyAllWindows()
 
+# Full page images
 images = dict.fromkeys(['e', 'm', 'r', 's', 'score_tabe'])
 images['e'] = pils[0]
 images['m'] = pils[1]
@@ -78,3 +80,18 @@ score_keys['s1'] = ScoreKey( 74, 594, 164, 407,  66748, 0.40295)
 score_keys['s2'] = ScoreKey(277, 594, 163, 407,  66341, 0.40049)
 
 
+score_keys['e1'].load_image(images['e'])
+score_keys['e2'].load_image(images['e'])
+score_keys['m1'].load_image(images['m'])
+score_keys['m2'].load_image(images['m'])
+score_keys['r1'].load_image(images['r'])
+score_keys['r2'].load_image(images['r'])
+score_keys['s1'].load_image(images['s'])
+score_keys['s2'].load_image(images['s'])
+
+for code in ('e', 'm', 'r', 's'):
+    cv2.imshow(f"{code}1", score_keys[f"{code}1"].image)
+    cv2.imshow(f"{code}2", score_keys[f"{code}2"].image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    pass
