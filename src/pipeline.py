@@ -17,7 +17,7 @@ sys.path.append('./classes')
 from classes.dewarper import Dewarper
 from classes.deshadower import Deshadower
 from classes.sheetScanner import Sheet
-from scoreKey import ScoreKey
+from scoreKey import ScoreKey, Column
 
 
 ap = argparse.ArgumentParser()
@@ -36,12 +36,9 @@ for i, p in enumerate(refs):
     refs[i] = p
 
 
-### Get PDF pages
+### Get PDF pages, convert to each PNG
 pils = convert_from_path(PATH)#[0]  # <-- PIL Image
 for i, p in enumerate(pils):
-    # print(type(p))
-    # p.show()
-    # refs[i].show()
     p = p.resize((850, 1100))
     p = np.asanyarray(p, dtype='uint8')
     p = cv2.cvtColor(p, cv2.COLOR_RGB2BGR)
@@ -53,10 +50,7 @@ for i, p in enumerate(pils):
     d = Dewarper(refs[i], p)
     d.dewarp()
     pils[i] = d.dewarped
-#     print(type(p), type(pils[i]))
-#     cv2.imshow("Page", p)
-#     cv2.waitKey(0)
-# cv2.destroyAllWindows()
+
 
 # Full page images
 images = dict.fromkeys(['e', 'm', 'r', 's', 'score_tabe'])
@@ -64,11 +58,12 @@ images['e'] = pils[0]
 images['m'] = pils[1]
 images['r'] = pils[2]
 images['s'] = pils[2]
-images['score_tabe'] = pils[3]
+images['score_table'] = pils[3]
 
 print("\n", type(images['e']), sep='')
 
 ### Extract the Scorekeys from Each Page
+# @TODO Extract the Scoring Table from final page
 score_keys = dict.fromkeys(['e1', 'e2', 'm1', 'm2', 'r1', 'r2', 's1', 's2'])
 score_keys['e1'] = ScoreKey( 74, 223, 164, 708, 116112, 0.23164)
 score_keys['e2'] = ScoreKey(277, 223, 163, 691, 112633, 0.23589)
@@ -94,4 +89,10 @@ for code in ('e', 'm', 'r', 's'):
     cv2.imshow(f"{code}2", score_keys[f"{code}2"].image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-    pass
+
+
+# Find all category marks in the Scoring Box
+
+
+
+

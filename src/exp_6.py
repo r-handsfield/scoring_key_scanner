@@ -1,18 +1,6 @@
-# Experiment 4:  Extract question positions and line markers from a column.
+# Experiment 6:  Try various morph operations to improve line marker detection.
 #
-# Results:
-# E: x0, y0, yL, vStride
-#     4, 70, 76, 16.66 px   
-# M: x0, y0, yL, vStride
-#     4, 81, 87, 16.66 px   
-# R: x0, y0, yL, vStride
-#     4, 70, 76, 16.66 px   
-# S: x0, y0, yL, vStride
-#     4, 70, 76, 16.66 px   
 # 
-# By trial and error, we determine that the row height is 16.66 px; the 
-# starting position is the same for ERS table data, and a bit lower for
-# M table data.
 
 import cv2, io, sys
 import numpy as np
@@ -72,19 +60,15 @@ for q in range(38):
         cv2.destroyAllWindows()
         break
 
-# E: x0, y0, yL, vStride
-#     4, 70, 76, 16.66 px   
-# M: x0, y0, yL, vStride
-#     4, 81, 87, 16.66 px   
-# R: x0, y0, yL, vStride
-#     4, 70, 76, 16.66 px   
-# S: x0, y0, yL, vStride
-#     4, 70, 76, 16.66 px   
-
+# Close contours to improve line detection
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5,1))
+gray = cv2.morphologyEx(gray, cv2.MORPH_CLOSE, kernel)
+bin = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)[1]
+inv = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)[1]
 
 # Find line positions
-# lines = cv2.HoughLinesP(inv, 20, np.pi/2, 50, minLineLength=15)
-lines = cv2.HoughLinesP(inv, 20, np.pi/2, 1, minLineLength=1)
+lines = cv2.HoughLinesP(inv, 20, np.pi/2, 50, minLineLength=10)
+# lines = cv2.HoughLinesP(inv, 20, np.pi/2, 1, minLineLength=1)
 print(type(lines) , len(lines))
 print(type(lines[0]) , len(lines[0]))
 # print(lines[0])
@@ -98,7 +82,7 @@ for i in range(len(lines)):
 
     if w/(h+.001) < 1:  # Skip verticals
         continue
-    elif w > 5:  # Skip long lines 
+    elif w < 3:  # Skip short lines 
         continue
     elif y1 < 80 or y2 < 80:
         continue
