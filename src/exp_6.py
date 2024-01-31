@@ -132,25 +132,25 @@ for i in range( len(candidates)-1, -1, -1):
 print(len(candidates))
 
 bin =cv2.cvtColor(bin, cv2.COLOR_GRAY2BGR)
-for c in candidates:
-    cv2.drawContours(bin, [c], -1, (0,0,255), 1)
+pic = bin.copy()
+# for c in candidates:
+#     cv2.drawContours(pic, [c], -1, (0,0,255), 1)
 
-# bin = cv2.drawContours(bin, candidates, -1, (0,0,255), 1)
-cv2.imshow("Contours", bin)
+cv2.drawContours(pic, candidates, -1, (0,0,255), 1)
+cv2.imshow("Contours", pic)
 
 if cv2.waitKey(0) == 27:  # Esc will kill the display loop
     cv2.destroyAllWindows()
 
-
-# Not working -- 219 lines after filtering
+### Filter using a function
 def filter_fcn(contour):
     c = contour
-    x,y,w,h = cv2.boundingRect(candidates[i])
+    x,y,w,h = cv2.boundingRect(c)
     area = w*h
     aspect = float(w)/h
 
     if (
-        aspect < 1 or
+        aspect < 1 or 
         area < 20 or
         w < 5 or w > 30 or h > 3 or
         y < 80 or x < 60
@@ -161,3 +161,10 @@ def filter_fcn(contour):
     
 lines = list(filter(filter_fcn, list(contours)))
 print(len(lines))
+
+pic = bin.copy()
+cv2.drawContours(pic, candidates, -1, (0,0,255), 1)
+cv2.imshow("Contours", pic)
+
+if cv2.waitKey(0) == 27:  # Esc will kill the display loop
+    cv2.destroyAllWindows()
