@@ -60,11 +60,6 @@ for q in range(38):
         cv2.destroyAllWindows()
         break
 
-# Close contours to improve line detection
-kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5,1))
-gray = cv2.morphologyEx(gray, cv2.MORPH_CLOSE, kernel)
-bin = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)[1]
-inv = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)[1]
 
 # Find line positions
 lines = cv2.HoughLinesP(inv, 20, np.pi/2, 50, minLineLength=10)
@@ -75,7 +70,7 @@ print(type(lines[0]) , len(lines[0]))
 
 pic = sk_image.copy()
 for i in range(len(lines)):
-    # pic = sk_image.copy()
+    # pic = sk_image.copy() 
     l = lines[i][0]
     x1, y1, x2, y2 = l[0], l[1], l[2], l[3]
     w, h = abs(x2-x1), abs(y2-y1)
@@ -103,3 +98,66 @@ for i in range(len(lines)):
 if cv2.waitKey(0) == 27:  # Esc will kill the display loop
     cv2.destroyAllWindows()
  
+
+# Close contours to improve line detection
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5,1))
+gray = cv2.morphologyEx(gray, cv2.MORPH_CLOSE, kernel)
+bin = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)[1]
+inv = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)[1]
+
+contours = cv2.findContours(inv, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+candidates = list(contours)
+# print(type(candidates[0]))
+# print(candidates[0])
+
+
+print("")
+for i in range( len(candidates)-1, -1, -1):
+    x,y,w,h = cv2.boundingRect(candidates[i])
+    area = w*h
+    aspect = float(w)/h
+    
+    print(f"{i}: x = {x}\t y = {y}\t w = {w}  h = {h}\t area = {area}   aspect = {round(aspect,5)}")
+    
+    if aspect < 1:
+        del(candidates[i])
+    elif area < 20:
+        del(candidates[i])
+    elif w < 5 or w > 30 or h > 3:
+        del(candidates[i])
+    elif y < 80 or x < 60:
+        del(candidates[i])
+        
+
+print(len(candidates))
+
+bin =cv2.cvtColor(bin, cv2.COLOR_GRAY2BGR)
+for c in candidates:
+    cv2.drawContours(bin, [c], -1, (0,0,255), 1)
+
+# bin = cv2.drawContours(bin, candidates, -1, (0,0,255), 1)
+cv2.imshow("Contours", bin)
+
+if cv2.waitKey(0) == 27:  # Esc will kill the display loop
+    cv2.destroyAllWindows()
+
+
+# Not working -- 219 lines after filtering
+def filter_fcn(contour):
+    c = contour
+    x,y,w,h = cv2.boundingRect(candidates[i])
+    area = w*h
+    aspect = float(w)/h
+
+    if (
+        aspect < 1 or
+        area < 20 or
+        w < 5 or w > 30 or h > 3 or
+        y < 80 or x < 60
+    ):
+        return False
+    else:
+        return True
+    
+lines = list(filter(filter_fcn, list(contours)))
+print(len(lines))
