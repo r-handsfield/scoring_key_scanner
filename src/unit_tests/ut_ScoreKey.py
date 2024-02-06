@@ -54,8 +54,9 @@ class TestCaseScoreKey(unittest.TestCase):
         self.assertEqual(sk.h, 4)
         self.assertEqual(sk.area, 12)
         self.assertEqual(sk.aspect, 0.75)
-        self.assertEqual(sk.rows, [])
+        self.assertEqual(sk.column_names, [])
         self.assertEqual(sk.columns, {})
+        self.assertEqual(sk.rows, [])
 
         self.assertIsNone(sk.image)
 

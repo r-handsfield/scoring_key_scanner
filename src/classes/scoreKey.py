@@ -70,6 +70,9 @@ class ScoreKey(Box):
     aspect : float
         The aspect ratio (w/h) of the Scoring Key
 
+    column_names : list[str]
+        String names of all the columns, used when creating the DataFrame
+
     columns : list[Column]
         All the columns of the Scoring Key, ordered from left to right. A 
         "column" is the box containing the data; it excludes the heading box.
@@ -101,6 +104,7 @@ class ScoreKey(Box):
         
         self.rows : list = []
         self.columns : dict = {}
+        self.column_names = []
 
     pass
 
