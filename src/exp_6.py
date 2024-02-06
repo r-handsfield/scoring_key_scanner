@@ -162,6 +162,8 @@ for i in range(len(df_contours)):
     df_scorekey.loc[row, col] = True
 print("Category Dataframe", df_scorekey, '', sep='\n')
 
+# @TODO Iterate over the df and write the cats to the json
+
 # Convert dataframe to dict just to test how it's done
 print("Caetgory Dict")
 score_key = df_scorekey.T.to_dict()
@@ -181,80 +183,82 @@ print("\n### END DataFrame Version", "\n\n\n\n")
 # structures, and argument types. The DataFrame version is better.
 #
 
-# print("### Begin Dict Version \n")
+sys.exit()
+sys.exit()
+print("### Begin Dict Version \n")
 
-# # Sort by y, x for convenience
-# marker_lines = dict(sorted(marks.items(), key=lambda m: (m[1]['y'], m[1]['x'])))  # dict of marker line contour attributes
-# for k, v in marker_lines.items():
-#     print(k, v)
+# Sort by y, x for convenience
+marker_lines = dict(sorted(marks.items(), key=lambda m: (m[1]['y'], m[1]['x'])))  # dict of marker line contour attributes
+for k, v in marker_lines.items():
+    print(k, v)
 
-# unique_x = np.zeros(len(marker_lines), dtype='uint16')
-# unique_y = np.zeros(len(marker_lines), dtype='uint16')
+unique_x = np.zeros(len(marker_lines), dtype='uint16')
+unique_y = np.zeros(len(marker_lines), dtype='uint16')
 
-# for i, attrs in marker_lines.items():
-#     unique_x[i] = attrs['x']
-#     unique_y[i] = attrs['y']
+for i, attrs in marker_lines.items():
+    unique_x[i] = attrs['x']
+    unique_y[i] = attrs['y']
 
-# print("All x coordinates", unique_x, '', sep='\n')
+print("All x coordinates", unique_x, '', sep='\n')
 
-# # Get unique x, y values of marker lines
-# unique_x = sorted(np.unique(unique_x)) 
-# unique_y = sorted(np.unique(unique_y))
+# Get unique x, y values of marker lines
+unique_x = sorted(np.unique(unique_x)) 
+unique_y = sorted(np.unique(unique_y))
 
-# print("Unique x coordinates", unique_x, sep='\n')
+print("Unique x coordinates", unique_x, sep='\n')
 
-# # Collapse similar x values
-# if len(unique_x) > 7:
-#     for i in range(1, len(unique_x)):
-#         prev, curr = unique_x[i-1], unique_x[i]
+# Collapse similar x values
+if len(unique_x) > 7:
+    for i in range(1, len(unique_x)):
+        prev, curr = unique_x[i-1], unique_x[i]
 
-#         # Collapse values that are within 5px of each other
-#         if util.close_to(prev, curr, 5):
-#              unique_x[i] = prev       
+        # Collapse values that are within 5px of each other
+        if util.close_to(prev, curr, 5):
+             unique_x[i] = prev       
 
 
-# # Collapse similar y values
-# if len(unique_y) > 30:
-#     for i in range(1, len(unique_y)):
-#         prev, curr = unique_x[i-1], unique_x[i]
+# Collapse similar y values
+if len(unique_y) > 30:
+    for i in range(1, len(unique_y)):
+        prev, curr = unique_x[i-1], unique_x[i]
         
-#         # Collapse values that are within 5px of each other
-#         if util.close_to(prev, curr, 5):
-#              unique_y[i] = prev       
+        # Collapse values that are within 5px of each other
+        if util.close_to(prev, curr, 5):
+             unique_y[i] = prev       
 
 
-# # Get unique x, y after collapsing similar values
-# unique_x = sorted(np.unique(unique_x)) 
-# unique_y = sorted(np.unique(unique_y))
-# if len(unique_y) != 30:
-#     raise ValueError(f"There shold be 30 rows, not {len(unique_y)}.")
+# Get unique x, y after collapsing similar values
+unique_x = sorted(np.unique(unique_x)) 
+unique_y = sorted(np.unique(unique_y))
+if len(unique_y) != 30:
+    raise ValueError(f"There shold be 30 rows, not {len(unique_y)}.")
 
-# print(unique_x, '', sep='\n')
+print(unique_x, '', sep='\n')
 
 
-# # Create dict of x-values and category names for indexing
-# cat_labels = ['N', 'A', 'F', 'G', 'S', 'IES', 'MDL']
-# cat_index =  dict(zip(unique_x, cat_labels))
+# Create dict of x-values and category names for indexing
+cat_labels = ['N', 'A', 'F', 'G', 'S', 'IES', 'MDL']
+cat_index =  dict(zip(unique_x, cat_labels))
 
-# # Create dict of y-values and question numbers for indexing
-# row_index = dict(zip(unique_y, range(1, len(unique_y)+1)))
-# print(cat_index, '', sep='\n')
+# Create dict of y-values and question numbers for indexing
+row_index = dict(zip(unique_y, range(1, len(unique_y)+1)))
+print(cat_index, '', sep='\n')
 
-# results = {}
-# for m in marker_lines.values():
-#     q = row_index[m['y']]
+results = {}
+for m in marker_lines.values():
+    q = row_index[m['y']]
 
-#     el = m['x']
-#     x = min(unique_x, key=lambda el:abs(el-x)) # Align x to closest unique value
-#     cat = cat_index[x]
+    el = m['x']
+    x = min(unique_x, key=lambda el:abs(el-x)) # Align x to closest unique value
+    cat = cat_index[x]
 
-#     if results.get(q, False): # If the question already has a category,
-#         results[q] += f', {cat}' # append the additional category
-#     else:
-#         results[q] = cat
+    if results.get(q, False): # If the question already has a category,
+        results[q] += f', {cat}' # append the additional category
+    else:
+        results[q] = cat
 
-# for k, v in results.items():
-#     print(k, ':', v)
+for k, v in results.items():
+    print(k, ':', v)
 
 
 
