@@ -13,13 +13,25 @@ ap = argparse.ArgumentParser()
 ap.add_argument('--test_code', '-tc', required=True, help='An ACT test code: yyyymm')
 args = ap.parse_args()
 
+# declare whitespace globals
+sp1 = chr(32)*1
+sp2 = chr(32)*2
+sp6 = chr(32)*6
+sp8 = chr(32)*8
+sp12 = chr(32)*12
+sp14 = chr(32)*14
+sp13 = chr(32)*13
+sp19 = chr(32)*19
+sp21 = chr(32)*21
 
 def generate_questions(numQ):
     """
     Generates a string of valid json representing categories within an ACT section.
+
+    @TODO Add sid and qNum as params to write template vars into the cat values
     
-    Inputs
-    ------
+    Parameters
+    ----------
         int : numQ
             the number of questions in the section
         
@@ -30,18 +42,21 @@ def generate_questions(numQ):
     Examples
     --------
         {
-            "1": { "strat":[], "cat":[], "pres":[] },
-            "2": { "strat":[], "cat":[], "pres":[] }
+            "1": { "cat":[] },
+            "2": { "cat":[] }
         }
     """
-    m = chr(32)*8 + '"q":{\n'
+    m = sp8 + '"q":{\n'
+
+    # Write first n-1 questions with trailing commas
     for i in range(1,numQ):
         if i < 10:
-            m += ' '
-        m += chr(32)*13 + f'"{i}":' + ' { "strat":[], "cat":[""], "pres":[] },\n'
+            m += sp1  # add extra whitespace for alignment
+        m += sp13 + f'"{i}":' + ' { "cat":[] },\n'
 
-    m += chr(32)*13 + f'"{numQ}":' + ' { "strat":[], "cat":[""], "pres":[] }\n'
-    m += chr(32)*12 + '}\n'
+    # write final question without trailing comma
+    m += sp13 + f'"{numQ}":' + ' { "cat":[] }\n'
+    m += sp12 + '}\n'
 
     return m
 
@@ -65,32 +80,79 @@ def generate_section(sid, numQ, comma=True):
     m = f'  "{sid}":' + '{\n'
 
     if sid == 'e':
-        m += chr(32)*8 + '"passage-breaks":["1", "16", "31", "46", "61"],\n\n'
+        m += sp8 + '"reporting_categories":{\n'
+        m += sp12 + '"pow" : "Production of Writing",\n'
+        m += sp12 + '"kla" : "Knowledge of Language",\n'
+        m += sp12 + '"cse" : "Conventions of Standard English"\n'
+        m += sp8 + '},\n\n'
+
+        m += sp8 + '"passage-breaks":["1", "16", "31", "46", "61"],\n\n'
+
+    elif sid == 'm':
+        m += sp8 + '"reporting_categories":{\n'
+        m += sp12 + '"phm" : "Preparing for Higher Math",\n'
+        m += sp12 + '"n"   : "Number & Quantity",\n'
+        m += sp12 + '"a"   : "Algebra",\n'
+        m += sp12 + '"f"   : "Functions",\n'
+        m += sp12 + '"g"   : "Geometry",\n'
+        m += sp12 + '"s"   : "Statistics & Probability",\n'
+        m += sp12 + '"ies" : "Integrating Essential Skills",\n'
+        m += sp12 + '"mdl" : "Modeling"\n'
+        m += sp8 + '},\n\n'
+
+        m += sp8 + '"passage-breaks":["1", "21", "41"],\n\n'
+        
 
     elif sid == 'r':
-        m += chr(32)*8 + '"passages":{\n'
-        m += chr(32)*21 + '"1":[""],\n'
-        m += chr(32)*21 + '"2":[""],\n'
-        m += chr(32)*21 + '"3":[""],\n'
-        m += chr(32)*21 + '"4":[""]\n'
-        m += chr(32)*19 + '},\n\n'
-        m += chr(32)*8 + '"passage-breaks":["1", "11", "21", "31"],\n\n'
+        m += sp8 + '"reporting_categories":{\n'
+        m += sp12 + '"kid" : "Key Ideas and Details",\n'
+        m += sp12 + '"cs"  : "Craft & Structure",\n'
+        m += sp12 + '"iki" : "Integration of Knowledge & Ideas",\n'
+        m += sp12 + '"f"   : "Fiction",\n'
+        m += sp12 + '"ln"  : "Literary Narrative",\n'
+        m += sp12 + '"ss"  : "Social Science",\n'
+        m += sp12 + '"h"   : "Humanities",\n'
+        m += sp12 + '"ns"  : "Natural Science",\n'
+        m += sp12 + '"c"   : "Comparison"\n'
+        m += sp8 + '},\n\n'
 
+        m += sp8 + '"passage_categories":{\n'
+        m += sp12 + '"1":["ln"],\n'
+        m += sp12 + '"2":["ss"],\n'
+        m += sp12 + '"3":["h"],\n'
+        m += sp12 + '"4":["ns"]\n'
+        m += sp8 + '},\n\n'
+
+        m += sp8 + '"passage-breaks":["1", "11", "21", "31"],\n\n'
+
+
+        
     elif sid == 's':
-        m += chr(32)*8 + '"passages":{\n'
-        m += chr(32)*21 + '"1":["", ""],\n'
-        m += chr(32)*21 + '"2":["", ""],\n'
-        m += chr(32)*21 + '"3":["", ""],\n'
-        m += chr(32)*21 + '"4":["", ""],\n'
-        m += chr(32)*21 + '"5":["", ""],\n'
-        m += chr(32)*21 + '"6":["", ""]\n'
-        m += chr(32)*19 + '},\n\n'
-        m += chr(32)*8 + '"passage-breaks":["", "", "", "", "", ""],\n\n'
+        m += sp8 + '"reporting_categories":{\n'
+        m += sp12 + '"iod" : "Interpretation of Data",\n'
+        m += sp12 + '"sin" : "Scientific Investigation",\n'
+        m += sp12 + '"emi" : "Evaluation of Models, Inferences, & Experimental Results",\n'
+        m += sp12 + '"se"  : "Single Experiment",\n'
+        m += sp12 + '"me"  : "Multiple Experiments",\n'
+        m += sp12 + '"cv"  : "Conflicting Viewpoints",\n'
+        m += sp12 + '"nsc" : "Non-standard Chart"\n'
+        m += sp8 + '},\n\n'
+
+        m += sp8 + '"passage_categories":{\n'
+        m += sp21 + '"1":["", ""],\n'
+        m += sp21 + '"2":["", ""],\n'
+        m += sp21 + '"3":["", ""],\n'
+        m += sp21 + '"4":["", ""],\n'
+        m += sp21 + '"5":["", ""],\n'
+        m += sp21 + '"6":["", ""]\n'
+        m += sp19 + '},\n\n'
+
+        m += sp8 + '"passage-breaks":["", "", "", "", "", ""],\n\n'
 
 
     m += generate_questions(numQ)
 
-    m += chr(32)*6 + '}'
+    m += sp6 + '}'
 
     if comma:
         m += ','
