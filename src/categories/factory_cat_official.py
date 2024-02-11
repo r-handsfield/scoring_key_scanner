@@ -24,14 +24,15 @@ sp13 = chr(32)*13
 sp19 = chr(32)*19
 sp21 = chr(32)*21
 
-def generate_questions(numQ):
+def generate_questions(sid, numQ):
     """
     Generates a string of valid json representing categories within an ACT section.
 
-    @TODO Add sid and qNum as params to write template vars into the cat values
-    
     Parameters
     ----------
+        char : sid
+            The section ID, one of ('e', 'm', 'r', 's')
+
         int : numQ
             the number of questions in the section
         
@@ -49,13 +50,15 @@ def generate_questions(numQ):
     m = sp8 + '"q":{\n'
 
     # Write first n-1 questions with trailing commas
-    for i in range(1,numQ):
+    for i in range(1,numQ+1):
         if i < 10:
             m += sp1  # add extra whitespace for alignment
-        m += sp13 + f'"{i}":' + ' { "cat":[] },\n'
-
+        m += sp13 + f'"{i}": {{ "cat":[{{{{ {sid}C{i} }}}}] }}'
+        if i < numQ: 
+            m += ',\n'
     # write final question without trailing comma
-    m += sp13 + f'"{numQ}":' + ' { "cat":[] }\n'
+    # m += sp13 + f'"{numQ}":' + ' { "cat":[] }\n'
+    m += '\n'
     m += sp12 + '}\n'
 
     return m
@@ -150,7 +153,7 @@ def generate_section(sid, numQ, comma=True):
         m += sp8 + '"passage-breaks":["", "", "", "", "", ""],\n\n'
 
 
-    m += generate_questions(numQ)
+    m += generate_questions(sid, numQ)
 
     m += sp6 + '}'
 
