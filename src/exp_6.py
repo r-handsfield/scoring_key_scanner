@@ -162,14 +162,38 @@ for i in range(len(df_contours)):
     df_scorekey.loc[row, col] = True
 print("Category Dataframe", df_scorekey, '', sep='\n')
 
-# @TODO Iterate over the df and write the cats to the json
 
 # Convert dataframe to dict just to test how it's done
-print("Category Dict")
-score_key = df_scorekey.T.to_dict()
+# print("Category Dict")
+# score_key = df_scorekey.T.to_dict()
 # for k, v in score_key.items():
 #     print(k, ':', v)
-print("\n### END ndArray Version", "\n\n\n\n")
+
+# Create template variable dict for injection into category template
+row = df_scorekey.loc[7, :]
+# print(row.index, row.values, sep='\n')
+# cols = (row.index*row.values).unique() 
+# cols = tuple(filter(None, cols))
+# print(cols, '\n')
+
+small = df_scorekey.loc[1:7, :]
+print(small)
+def cnames(i, row):
+    cols = (row.index*row.values).unique() 
+    cols = list(filter(None, cols))
+    cols = tuple( [i, cols] )
+    return cols
+
+all_cols = []
+for r in range(len(small.index)):
+    row = small.loc[r+1, :]
+    all_cols.append(cnames(r, row))
+
+print(all_cols)
+# for r in range(1, len(small.index)+1):
+#     print(r, small.loc[])
+
+print("\n### END DataFrame Version", "\n\n\n\n")
 
 ### END DataFrame Version ######################################################yy
 
