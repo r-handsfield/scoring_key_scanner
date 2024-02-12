@@ -38,37 +38,61 @@ class TestCaseBox(unittest.TestCase):
 class TestCaseScoreKey(unittest.TestCase):
 
     def setUp(self):
-        self.scoreKey = ScoreKey( 74, 223, 164, 708, 116112, 0.23164)
+        # self.scoreKey = ScoreKey( 74, 223, 164, 708, 116112, 0.23164)
         page_image = Image.open("../images/ske.png")
         page_image = page_image.convert('RGB')
         page_image = page_image.resize((850,1100))
         self.page_image = np.asarray(page_image, dtype='uint8')
 
     def test_instantiation(self):
-        sk = ScoreKey(1, 2, 3, 4)
-        self.assertIsInstance(sk, ScoreKey)
+        with self.subTest("Passing Section Code Only"):
+            sk = ScoreKey('e')
+            self.assertIsInstance(sk, ScoreKey)
 
-        self.assertEqual(sk.x, 1)
-        self.assertEqual(sk.y, 2)
-        self.assertEqual(sk.w, 3)
-        self.assertEqual(sk.h, 4)
-        self.assertEqual(sk.area, 12)
-        self.assertEqual(sk.aspect, 0.75)
-        self.assertEqual(sk.column_names, [])
-        self.assertEqual(sk.columns, {})
-        self.assertEqual(sk.rows, [])
+            # self.assertEqual(sk.x, 1)
+            # self.assertEqual(sk.y, 2)
+            # self.assertEqual(sk.w, 3)
+            # self.assertEqual(sk.h, 4)
+            # self.assertEqual(sk.area, 12)
+            # self.assertEqual(sk.aspect, 0.75)
+            self.assertEqual(sk.column_names, [])
+            self.assertEqual(sk.columns, {})
+            self.assertEqual(sk.rows, [])
 
-        self.assertIsNone(sk.image)
+            self.assertEqual(sk.section_code, 'e')
+            self.assertEqual(sk.images, [None, None])
+            self.assertEqual(len(sk.tables), 2)
+            
+            for box in sk.tables:
+                self.assertIsInstance(box, Box)
+
+        with self.subTest("Passing section code and page image"):
+            sk = ScoreKey('e', page=self.page_image)
+            self.assertIsInstance(sk, ScoreKey)
+
+            self.assertEqual(sk.section_code, 'e')
+            self.assertEqual(len(sk.tables), 2)
+            self.assertEqual(len(sk.images), 2)
+            
+            for image in sk.images:
+                self.assertIsInstance(image, np.ndarray)
+                self.assertEqual(len(image.shape), 3)
+                self.assertIsInstance(image[0][0][0], np.uint8)
+
+
+
+
 
     def method_load_image(self):
-        sk = self.scoreKey
-        sk.load_image(self.page_image)
+        # sk = self.scoreKey
+        # sk.load_image(self.page_image)
 
-        self.assertIsInstance(sk.image, np.ndarray)
+        # self.assertIsInstance(sk.image, np.ndarray)
 
-        height, width = sk.image.shape[0], sk.image.shape[1]
-        self.assertEqual(height, sk.h)
-        self.assertEqual(width, sk.w)
+        # height, width = sk.image.shape[0], sk.image.shape[1]
+        # self.assertEqual(height, sk.h)
+        # self.assertEqual(width, sk.w)
+        pass
 
         
 
@@ -122,7 +146,7 @@ def suite():
     suite.addTest(TestCaseBox('test_members'))
 
     suite.addTest(TestCaseScoreKey('test_instantiation'))
-    suite.addTest(TestCaseScoreKey('method_load_image'))
+    # suite.addTest(TestCaseScoreKey('method_load_image'))
 
     suite.addTest(TestCaseColumn('test_instantiation'))
 

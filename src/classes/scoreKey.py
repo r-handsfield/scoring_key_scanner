@@ -2,10 +2,14 @@
 # A class representing the printed Scoring Keys
 
 import cv2
+import numpy as np
 from dataclasses import dataclass
+from collections import namedtuple
+
 
 CV_Image = 'np.ndarray[int]'
 
+BoxParams = namedtuple('BoxParams', "x y w h area aspect")
 
 @dataclass
 class Box():
@@ -50,8 +54,17 @@ class Box():
 class ScoreKey(Box):
     """
 
-    Attributes
-    ----------
+    Class Attributes
+    ----------------
+    expected_box_parameters : dict
+        Key : str
+            'e1', 'e2', 'm1', 'm2', 'r1', 'r2', 's1', 's2'
+        Val : list[int, float]
+            [x-coord, y-coord, width, height, area, aspect_ratio]
+            
+    
+    Instance Attributes
+    -------------------
     x : int
         The horizontal position in pixels of the Scoring Key's top left corner
 
@@ -80,33 +93,71 @@ class ScoreKey(Box):
     rows : list[Row]
         All the rows of the Scoring Key, ordered from top to bottom.
 
-    image : CV_Image
-        The image of one of the Scoring Key boxes.
+    boxes : list[Box]
+        The locations and sizes of the Scoring Key boxes.
+
+    images : list[CV_Image]
+        The images of the Scoring Key boxes.
     """
+    
 
-    def __init__(self, x, y, w, h, area=None, aspect=None) -> None:
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
+    def __init__(self, section_code: str, page: CV_Image=None) -> None:
+        """
+        The constructor
 
-        self.image = None
-        
-        if area is None:
-            self.area = w*h
-        else:
-            self.area = area
+        Parameters
+        ----------
+        section_code : str
+            One of 'e', 'm', 'r', 's'
 
-        if aspect is None:
-            self.aspect = w/h
-        else:
-            self.aspect = aspect
-        
+        page : numpy.ndarray
+            An image of the page containing the scoring key boxes
+
+        Returns
+        -------
+        None
+        """
+        expected_box_parameters = {
+            'e1' : Box( 74, 223, 164, 708),
+            'e2' : Box(277, 223, 163, 691),
+            'm1' : Box( 74,  94, 300, 586),
+            'm2' : Box(476,  94, 300, 586),
+            'r1' : Box( 74,  94, 164, 407),
+            'r2' : Box(277,  94, 163, 407),
+            's1' : Box( 74, 594, 164, 407),
+            's2' : Box(277, 594, 163, 407),
+        }
+        self.section_code = section_code
+
         self.rows : list = []
         self.columns : dict = {}
         self.column_names = []
+        self.tables = [None, None]
+        self.images = [None, None]
 
-    pass
+        self.tables[0] = expected_box_parameters[f'{section_code}1']
+        self.tables[1] = expected_box_parameters[f'{section_code}2']
+
+        if page is None:
+            pass
+        elif isinstance(page, np.ndarray):
+            if len(page.shape) < 3:
+                page = cv2.cvtColor(page, cv2.COLOR_GRAY2BGR)
+
+            x, y = self.tables[0].x, self.tables[0].y
+            w, h = self.tables[0].w, self.tables[0].h
+            box = page[y:y+h, x:x+w]
+            self.images[0] = box 
+
+            x, y = self.tables[1].x, self.tables[1].y
+            w, h = self.tables[1].w, self.tables[1].h
+            box = page[y:y+h, x:x+w]
+            self.images[1] = box 
+        else:
+            raise TypeError("Page must be a numpy array of integers.")
+
+
+
 
 
     def load_image(self, image: CV_Image) -> None:
