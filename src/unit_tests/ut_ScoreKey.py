@@ -38,23 +38,17 @@ class TestCaseBox(unittest.TestCase):
 class TestCaseScoreKey(unittest.TestCase):
 
     def setUp(self):
-        # self.scoreKey = ScoreKey( 74, 223, 164, 708, 116112, 0.23164)
         page_image = Image.open("../images/ske.png")
         page_image = page_image.convert('RGB')
         page_image = page_image.resize((850,1100))
         self.page_image = np.asarray(page_image, dtype='uint8')
+        self.scoreKey = ScoreKey('e', self.page_image)
 
     def test_instantiation(self):
         with self.subTest("Passing Section Code Only"):
             sk = ScoreKey('e')
             self.assertIsInstance(sk, ScoreKey)
 
-            # self.assertEqual(sk.x, 1)
-            # self.assertEqual(sk.y, 2)
-            # self.assertEqual(sk.w, 3)
-            # self.assertEqual(sk.h, 4)
-            # self.assertEqual(sk.area, 12)
-            # self.assertEqual(sk.aspect, 0.75)
             self.assertEqual(sk.column_names, [])
             self.assertEqual(sk.columns, {})
             self.assertEqual(sk.rows, [])
@@ -78,6 +72,12 @@ class TestCaseScoreKey(unittest.TestCase):
                 self.assertIsInstance(image, np.ndarray)
                 self.assertEqual(len(image.shape), 3)
                 self.assertIsInstance(image[0][0][0], np.uint8)
+
+        with self.assertRaises(TypeError):
+            ScoreKey('e', 12345)
+
+        with self.assertRaises(TypeError):
+            ScoreKey(55, 12345)
 
 
 

@@ -127,6 +127,10 @@ class ScoreKey(Box):
             's1' : Box( 74, 594, 164, 407),
             's2' : Box(277, 594, 163, 407),
         }
+        
+        if not isinstance(section_code, str):
+            raise TypeError(f"The section code must be a string, not {type(section_code)}")
+
         self.section_code = section_code
 
         self.rows : list = []
@@ -141,6 +145,10 @@ class ScoreKey(Box):
         if page is None:
             pass
         elif isinstance(page, np.ndarray):
+            w, h = page.shape[1], page.shape[0]
+
+            if w != 850 or h != 1100:
+                raise TypeError(f"The page must be 850 x 1100 pixels, not {w} x {h}.")
             if len(page.shape) < 3:
                 page = cv2.cvtColor(page, cv2.COLOR_GRAY2BGR)
 
@@ -154,7 +162,7 @@ class ScoreKey(Box):
             box = page[y:y+h, x:x+w]
             self.images[1] = box 
         else:
-            raise TypeError("Page must be a numpy array of integers.")
+            raise TypeError(f"Page must be a numpy array of integers, not a {type(page)}.")
 
 
 
