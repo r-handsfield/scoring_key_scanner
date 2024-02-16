@@ -9,7 +9,6 @@ from collections import namedtuple
 
 CV_Image = 'np.ndarray[int]'
 
-BoxParams = namedtuple('BoxParams', "x y w h area aspect")
 
 @dataclass
 class Box():
@@ -53,38 +52,30 @@ class Box():
 @dataclass
 class ScoreKey(Box):
     """
+    Represents all the image and data attributes for the scoring key
+    boxes of a single ACT section.
 
-    Class Attributes
-    ----------------
+    Attributes
+    ----------
     expected_box_parameters : dict
         Key : str
             'e1', 'e2', 'm1', 'm2', 'r1', 'r2', 's1', 's2'
-        Val : list[int, float]
+        Val : Box
             [x-coord, y-coord, width, height, area, aspect_ratio]
-            
     
-    Instance Attributes
-    -------------------
-    x : int
-        The horizontal position in pixels of the Scoring Key's top left corner
+    section_code : str
+        One of 'e', 'm', 'r', 's'. 
 
-    y : int
-        The vertical position in pixels of the Scoring Key's top left corner
+    tables : list[Box]
+        The expected table sizes for the section, used for subsetting the
+        table images from the larger page.
 
-    w : int
-        The width in pixels of the Scoring Key
-
-    h : int
-        The height in pixels of the Scoring Key
-
-    area : int 
-        The area in pixels of the Scoring Key
-
-    aspect : float
-        The aspect ratio (w/h) of the Scoring Key
+    images : list[CV_Image]
+        The images (np.array) of the individual scoring key boxes for the 
+        section. These images are processed to extract the category marks.
 
     column_names : list[str]
-        String names of all the columns, used when creating the DataFrame
+        String names of all the columns, used when creating the DataFrame.
 
     columns : list[Column]
         All the columns of the Scoring Key, ordered from left to right. A 
@@ -131,7 +122,7 @@ class ScoreKey(Box):
         if not isinstance(section_code, str):
             raise TypeError(f"The section code must be a string, not {type(section_code)}")
 
-        self.section_code = section_code
+        self.section_code = section_code.lower()
 
         self.rows : list = []
         self.columns : dict = {}
