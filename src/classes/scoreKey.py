@@ -136,49 +136,57 @@ class ScoreKey(Box):
         if page is None:
             pass
         elif isinstance(page, np.ndarray):
-            w, h = page.shape[1], page.shape[0]
+            self.load_page(page)
+            # w, h = page.shape[1], page.shape[0]
 
-            if w != 850 or h != 1100:
-                raise TypeError(f"The page must be 850 x 1100 pixels, not {w} x {h}.")
-            if len(page.shape) < 3:
-                page = cv2.cvtColor(page, cv2.COLOR_GRAY2BGR)
+            # if w != 850 or h != 1100:
+            #     raise TypeError(f"The page must be 850 x 1100 pixels, not {w} x {h}.")
+            # if len(page.shape) < 3:
+            #     page = cv2.cvtColor(page, cv2.COLOR_GRAY2BGR)
 
-            x, y = self.tables[0].x, self.tables[0].y
-            w, h = self.tables[0].w, self.tables[0].h
-            box = page[y:y+h, x:x+w]
-            self.images[0] = box 
+            # x, y = self.tables[0].x, self.tables[0].y
+            # w, h = self.tables[0].w, self.tables[0].h
+            # box = page[y:y+h, x:x+w]
+            # self.images[0] = box 
 
-            x, y = self.tables[1].x, self.tables[1].y
-            w, h = self.tables[1].w, self.tables[1].h
-            box = page[y:y+h, x:x+w]
-            self.images[1] = box 
+            # x, y = self.tables[1].x, self.tables[1].y
+            # w, h = self.tables[1].w, self.tables[1].h
+            # box = page[y:y+h, x:x+w]
+            # self.images[1] = box 
         else:
             raise TypeError(f"Page must be a numpy array of integers, not a {type(page)}.")
 
 
-
-
-
-    def load_image(self, image: CV_Image) -> None:
+    def load_page(self, page: CV_Image) -> bool:
         """
-        Subsets a Scoring Key box from an 850 x 1100 px page image and stores
-        it as a CV_Image (np.ndarray) in the 'image' attribute."
+        Subsets a pair of Scoring Key boxes from an 850 x 1100 px page image 
+        and stores them as CV_Images (np.ndarray) in the 'images' attribute."
 
         Parameters
         ----------
-        image : CV_Image
+        page : CV_Image
             An 850 x 1100 px full page image containing the Scoring Key box.
 
         Returns
         -------
-        CV_Image
-            The image of the Scoring Key box
+        bool
+            True if the method doensn't crash, False otherwise
         """
-        x, y, w, h = self.x, self.y, self.w, self.h
-        score_key_box = image[y:y+h, x:x+w]
-        self.image = score_key_box
+        if not isinstance(page, np.ndarray):
+            raise TypeError(f"The page must be a numpy array of integers, not a {type(page)}.")
+        
+        w, h = page.shape[1], page.shape[0]
+        if w != 850 or h != 1100:
+                raise TypeError(f"The page must be 850 x 1100 pixels, not {w} x {h}.")
+        if len(page.shape) < 3:
+            page = cv2.cvtColor(page, cv2.COLOR_GRAY2BGR)
+        
+        for i, params in enumerate(self.tables):
+            x, y, w, h = params.x, params.y, params.w, params.h
+            box = page[y:y+h, x:x+w]
+            self.images[i] = box
 
-        return score_key_box
+        return True
 
 
 

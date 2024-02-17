@@ -44,6 +44,7 @@ class TestCaseScoreKey(unittest.TestCase):
         self.page_image = np.asarray(page_image, dtype='uint8')
         self.scoreKey = ScoreKey('e', self.page_image)
 
+
     def test_instantiation(self):
         with self.subTest("Passing Section Code Only"):
             sk = ScoreKey('e')
@@ -80,18 +81,22 @@ class TestCaseScoreKey(unittest.TestCase):
             ScoreKey(55, 12345)
 
 
+    def method_load_page(self):
+        sk = self.scoreKey
+        self.assertTrue(sk.load_page(self.page_image))
 
+        self.assertIsInstance(sk.images[0], np.ndarray)
+        self.assertIsInstance(sk.images[1], np.ndarray)
 
+        height, width = sk.images[0].shape[0], sk.images[0].shape[1]
+        params = sk.tables[0]
+        w, h = params.w, params.h
+        self.assertEqual(height, h)
+        self.assertEqual(width, w)
 
-    def method_load_image(self):
-        # sk = self.scoreKey
-        # sk.load_image(self.page_image)
+        with self.assertRaises(TypeError):
+            sk.load_page(123)
 
-        # self.assertIsInstance(sk.image, np.ndarray)
-
-        # height, width = sk.image.shape[0], sk.image.shape[1]
-        # self.assertEqual(height, sk.h)
-        # self.assertEqual(width, sk.w)
         pass
 
         
@@ -146,7 +151,7 @@ def suite():
     suite.addTest(TestCaseBox('test_members'))
 
     suite.addTest(TestCaseScoreKey('test_instantiation'))
-    # suite.addTest(TestCaseScoreKey('method_load_image'))
+    suite.addTest(TestCaseScoreKey('method_load_page'))
 
     suite.addTest(TestCaseColumn('test_instantiation'))
 
