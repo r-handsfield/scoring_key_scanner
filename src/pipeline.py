@@ -19,8 +19,11 @@ from classes.dewarper import Dewarper
 from classes.deshadower import Deshadower
 from classes.sheetScanner import Sheet
 from scoreKey import ScoreKey, Column
+from sheetUtilities import SheetUtilities
 
+util = SheetUtilities()
 
+### Get CLI arguments
 ap = argparse.ArgumentParser()
 ap.add_argument('--pdf_path', '-p', required=True, help='path/to/pdf_file')
 args = ap.parse_args()
@@ -61,7 +64,7 @@ images['r'] = pils[2]
 images['s'] = pils[2]
 images['score_table'] = pils[3]
 
-print("\n", type(images['e']), sep='')
+# print("\n", type(images['e']), sep='')
 
 ### Extract the Scorekeys from Each Page
 # @TODO Extract the Scoring Table from final page
@@ -74,12 +77,12 @@ score_keys['s'] = ScoreKey('s', images['s'])
 for code in ('e', 'm', 'r', 's'):
     cv2.imshow(f'{code}1', score_keys[code].images[0])
     cv2.imshow(f'{code}2', score_keys[code].images[1])
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    if cv2.waitKey(0) == 27:
+        break
+cv2.destroyAllWindows()
 
 
-# Find all category marks in the Scoring Box
-# @TODO Iterate through both images in each ScoreKey object
+### Find all category marks in the Scoring Boxes
 for code in ('e', 'm', 'r', 's'):
     sk = score_keys[code]
 
@@ -93,24 +96,46 @@ for code in ('e', 'm', 'r', 's'):
         contours = cv2.findContours(closed_inv, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
         
         markers = sk.extract_markers(contours)
-
+        sk.category_marks += markers
+        
         pic = image.copy()
         cv2.drawContours(pic, markers, -1, (0,0,255), 1)
         cv2.imshow(f"{code}{i+1} Markers", pic)
-        cv2.waitKey(0) 
+        # cv2.waitKey(0) 
     cv2.destroyAllWindows()
 
 
-    # for c in candidates:
-    #     x,y,w,h = cv2.boundingRect(c)
-    #     area = w*h  # More accurate than cv2.contourArea
-    #     ratio = float(w)/float(h)
-    #     print(f"x = {x}  y = {y}  w = {w}  h = {h}   area = {area}   aspect = {round(ratio,5)}")
-    #     pic = sk.image.copy()
-    #     cv2.drawContours(pic, [c], -1, (0,0,255), 1)
-    #     cv2.imshow("C", pic)
 
-    #     if cv2.waitKey(0) == 27:  # Esc will kill the display loop
-    #         cv2.destroyAllWindows()
-    #         break
+### Find the unique x, y coordinates of the category marks
+for code in ('e', 'm', 'r', 's'):
+    sk = score_keys[code]
+    unique_x = set()
+    unique_y = set()
 
+    for c in sk.category_marks:
+        x,y,w,h = cv2.boundingRect(c)
+        unique_x.add(x) # adds unique values only
+        unique_y.add(y)
+
+    unique_x = list(sorted(unique_x))
+    unique_y = list(sorted(unique_y))
+
+    # Collapse unique values that are close together
+    for i in range(1, len(unique_x)):
+        prev, curr = unique_x[i-1], unique_x[i]
+        if util.close_to(prev, curr, 5):
+             unique_x[i] = prev 
+
+    for i in range(1, len(unique_y)):
+        prev, curr = unique_y[i-1], unique_y[i]
+        if util.close_to(prev, curr, 5):
+            unique_y[i] = prev
+
+
+    print(len(sk.category_marks))
+    print(len(unique_x))
+    print(len(unique_y), '\n')
+
+
+
+    
