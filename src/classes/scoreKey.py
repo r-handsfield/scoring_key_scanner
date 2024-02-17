@@ -140,17 +140,28 @@ class ScoreKey(Box):
             'r': {'num_questions': 40},
             's': {'num_questions': 40},
         }
+
+        expected_column_names = {
+            'e': ['Key', 'POW', 'KLA', 'CSE'],
+            'm': ['Key', 'PHM-N', 'PHM-A', 'PHM-F', 'PHM-G', 'PHM-S', 'IES', 'MDL'],
+            'r': ['Key', 'KID', 'CS', 'IKI'],
+            's': ['Key', 'IOD', 'SIN', 'EMI']
+        }
         
         if not isinstance(section_code, str):
             raise TypeError(f"The section code must be a string, not {type(section_code)}")
 
         self.section_code = section_code.lower()
+
+        if not section_code in ('e', 'm', 'r', 's'):
+            raise ValueError(f"The section code must be one of ('e', 'm', 'r', 's'), not f{section_code}.")
+
         self.num_questions = score_key_metadata.get(self.section_code)['num_questions']
+        self.column_names = expected_column_names[self.section_code]
         self.category_marks = []
 
         self.rows : list = []
         self.columns : dict = {}
-        self.column_names = []
         self.tables = [None, None]
         self.images = [None, None]
 

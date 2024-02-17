@@ -51,12 +51,12 @@ class TestCaseScoreKey(unittest.TestCase):
             sk = ScoreKey('e')
             self.assertIsInstance(sk, ScoreKey)
 
-            self.assertEqual(sk.column_names, [])
             self.assertEqual(sk.columns, {})
             self.assertEqual(sk.rows, [])
 
             self.assertEqual(sk.section_code, 'e')
             self.assertEqual(sk.num_questions, 75)
+            self.assertEqual(sk.column_names, ['Key', 'POW', 'KLA', 'CSE'])
             self.assertEqual(sk.category_marks, [])
             self.assertEqual(sk.images, [None, None])
             self.assertEqual(len(sk.tables), 2)
@@ -81,7 +81,14 @@ class TestCaseScoreKey(unittest.TestCase):
             ScoreKey('e', 12345)
 
         with self.assertRaises(TypeError):
+            ScoreKey(55)
+
+        with self.assertRaises(TypeError):
             ScoreKey(55, 12345)
+
+        with self.assertRaises(ValueError):
+            ScoreKey('q')
+
 
 
     def method_load_page(self):
