@@ -79,36 +79,38 @@ for code in ('e', 'm', 'r', 's'):
 
 
 # Find all category marks in the Scoring Box
-for code in ('e', 'r', 's'):
-    sk = score_keys[f"{code}1"]
-    gray = cv2.cvtColor(sk.image, cv2.COLOR_BGR2GRAY)
-    bin = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)[1]
-    inv = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)[1]
-      
-    # Find the interior contours and extract the columns
-    # TODO convolve gray with line kernel
-    candidates = list(cv2.findContours(inv, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[0])
-    print(len(candidates))
-    # delete candidates that are too small to be a column
-    for i in range( (len(candidates)-1), -1, -1 ):
-        c = candidates[i]
-        area = cv2.contourArea(c)
-        if area < 10000:
-            del(candidates[i])
+# @TODO Iterate through both images in each ScoreKey object
+for code in ('e', 'm', 'r', 's'):
+    sk = score_keys[code]
 
-    # Sort the columns left-to-rigth
-    candidates = sort_contours(candidates, method='left-to-right')[0]
+    for i, image in enumerate(sk.images):
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5,1))
+        closed = cv2.morphologyEx(gray, cv2.MORPH_CLOSE, kernel)
+        closed_bin = cv2.threshold(closed, 250, 255, cv2.THRESH_BINARY)[1]
+        closed_inv = cv2.threshold(closed, 250, 255, cv2.THRESH_BINARY_INV)[1]
 
-    for c in candidates:
-        x,y,w,h = cv2.boundingRect(c)
-        area = w*h  # More accurate than cv2.contourArea
-        ratio = float(w)/float(h)
-        print(f"x = {x}  y = {y}  w = {w}  h = {h}   area = {area}   aspect = {round(ratio,5)}")
-        pic = sk.image.copy()
-        cv2.drawContours(pic, [c], -1, (0,0,255), 1)
-        cv2.imshow("C", pic)
+        contours = cv2.findContours(closed_inv, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+        
+        markers = sk.extract_markers(contours)
 
-        if cv2.waitKey(0) == 27:  # Esc will kill the display loop
-            cv2.destroyAllWindows()
-            break
+        pic = image.copy()
+        cv2.drawContours(pic, markers, -1, (0,0,255), 1)
+        cv2.imshow(f"{code}{i+1} Markers", pic)
+        cv2.waitKey(0) 
+    cv2.destroyAllWindows()
+
+
+    # for c in candidates:
+    #     x,y,w,h = cv2.boundingRect(c)
+    #     area = w*h  # More accurate than cv2.contourArea
+    #     ratio = float(w)/float(h)
+    #     print(f"x = {x}  y = {y}  w = {w}  h = {h}   area = {area}   aspect = {round(ratio,5)}")
+    #     pic = sk.image.copy()
+    #     cv2.drawContours(pic, [c], -1, (0,0,255), 1)
+    #     cv2.imshow("C", pic)
+
+    #     if cv2.waitKey(0) == 27:  # Esc will kill the display loop
+    #         cv2.destroyAllWindows()
+    #         break
 
