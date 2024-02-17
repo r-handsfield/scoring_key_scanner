@@ -83,6 +83,12 @@ class ScoreKey(Box):
         The images (np.array) of the individual scoring key boxes for the 
         section. These images are processed to extract the category marks.
 
+    num_questions : int
+        The number of questions in an exam section.
+
+    self.category_marks : list[CV_Contour]
+        The contours of the category marker lines for an exam section.
+
     column_names : list[str]
         String names of all the columns, used when creating the DataFrame.
 
@@ -139,6 +145,8 @@ class ScoreKey(Box):
             raise TypeError(f"The section code must be a string, not {type(section_code)}")
 
         self.section_code = section_code.lower()
+        self.num_questions = score_key_metadata.get(self.section_code)['num_questions']
+        self.category_marks = []
 
         self.rows : list = []
         self.columns : dict = {}
