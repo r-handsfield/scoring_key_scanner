@@ -8,6 +8,7 @@ from collections import namedtuple
 
 
 CV_Image = 'np.ndarray[int]'
+CV_Contour = 'np.ndarray[np.ndarray[np.ndarray[int]]]'
 
 
 @dataclass
@@ -57,7 +58,7 @@ class ScoreKey(Box):
 
     Attributes
     ----------
-    expected_box_parameters : dict
+    expected_table_parameters : dict
         Key : str
             'e1', 'e2', 'm1', 'm2', 'r1', 'r2', 's1', 's2'
         Val : Box
@@ -108,7 +109,7 @@ class ScoreKey(Box):
         -------
         None
         """
-        expected_box_parameters = {
+        expected_table_parameters = {
             'e1' : Box( 74, 223, 164, 708),
             'e2' : Box(277, 223, 163, 691),
             'm1' : Box( 74,  94, 300, 586),
@@ -130,8 +131,8 @@ class ScoreKey(Box):
         self.tables = [None, None]
         self.images = [None, None]
 
-        self.tables[0] = expected_box_parameters[f'{section_code}1']
-        self.tables[1] = expected_box_parameters[f'{section_code}2']
+        self.tables[0] = expected_table_parameters[f'{section_code}1']
+        self.tables[1] = expected_table_parameters[f'{section_code}2']
 
         if page is None:
             pass
@@ -187,6 +188,57 @@ class ScoreKey(Box):
             self.images[i] = box
 
         return True
+    
+
+    def filter_markers(self, contour: CV_Contour) -> bool:
+        """
+        A filter function that returns True if a contour is the same shape as
+        a scoring key marker line. This function is passed to python's 'filter'
+        function in self.extract_markers().
+
+        Parameters
+        ----------
+        contour : CV_Contour
+            A contour that may be a scoring key marker line
+        
+        Returns
+        -------
+        bool
+            True if the contour has the same shape and postion as expected
+            of a marker line.
+        """
+        c = contour
+        x,y,w,h = cv2.boundingRect(c)
+        area = w*h
+        aspect = float(w)/h
+
+        if (
+            aspect < 1 or 
+            area < 20 or
+            w < 5 or w > 30 or h > 3 or
+            y < 80 or x < 60
+        ):
+            return False
+        else:
+            return True
+        
+    
+    def extract_markers(self, contours: list) -> list:
+        """
+        Filters marker lines from a list of contours.
+
+        Parameters
+        ----------
+        contours : list[CV_Contour]
+            The list of candidate contours
+
+        Returns
+        -------
+        list[CV_Contour]
+            The list of contours representing score key marker lines
+        """
+        markers = list(filter(self.filter_markers, list(contours)))
+        return markers
 
 
 

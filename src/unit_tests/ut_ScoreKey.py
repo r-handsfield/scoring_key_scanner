@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image
 
 sys.path.append('../classes')
+sys.path.append('./test_files')
 from scoreKey import Box, ScoreKey, Column, Row
 
 class TestCaseBox(unittest.TestCase):
@@ -99,7 +100,54 @@ class TestCaseScoreKey(unittest.TestCase):
 
         pass
 
-        
+
+    def method_filter_markers(self):
+        sk = self.scoreKey
+        image = cv2.imread('test_files/good_line.png')
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        inv = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)[1]
+        contours = cv2.findContours(inv, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+        line = contours[0]
+
+        if False:
+            cv2.drawContours(image, line, -1, (0,0,255), 2)
+            cv2.imshow("Contours", image)
+            cv2.waitKey(0)
+
+        self.assertTrue(sk.filter_markers(line))
+
+
+    def method_extract_markers(self):
+        sk = self.scoreKey
+        image = cv2.imread('test_files/line_contours.png')
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        inv = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)[1]
+        contours = cv2.findContours(inv, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+
+        if False:
+            pic = image.copy()
+            cv2.drawContours(pic, contours, -1, (0,0,255), 1)
+            cv2.imshow("Contours", pic)
+            cv2.waitKey(0)
+
+        self.assertEqual(len(contours), 25)
+
+        correct_line = sk.extract_markers(contours)
+        self.assertEqual(len(correct_line), 1)
+        self.assertIsInstance(correct_line, list)
+
+        if False:
+            # The remaining contour should be line #4
+            pic = image.copy()
+            cv2.drawContours(pic, correct_line, -1, (0,0,255), 1)
+            cv2.imshow("Marker Lines", pic)
+            cv2.waitKey(0)
+
+        x,y,w,h = cv2.boundingRect(correct_line[0])
+        self.assertEqual(x, 70)
+        self.assertEqual(y, 90)
+        self.assertEqual(w, 24)
+        self.assertEqual(h, 2)
 
 
 ### End ScoreKey
@@ -152,6 +200,8 @@ def suite():
 
     suite.addTest(TestCaseScoreKey('test_instantiation'))
     suite.addTest(TestCaseScoreKey('method_load_page'))
+    suite.addTest(TestCaseScoreKey('method_filter_markers'))
+    suite.addTest(TestCaseScoreKey('method_extract_markers'))
 
     suite.addTest(TestCaseColumn('test_instantiation'))
 
