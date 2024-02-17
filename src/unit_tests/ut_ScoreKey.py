@@ -56,6 +56,7 @@ class TestCaseScoreKey(unittest.TestCase):
             self.assertEqual(sk.rows, [])
 
             self.assertEqual(sk.section_code, 'e')
+            self.assertEqual(sk.num_questions, 75)
             self.assertEqual(sk.images, [None, None])
             self.assertEqual(len(sk.tables), 2)
             

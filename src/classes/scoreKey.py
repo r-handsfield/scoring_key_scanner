@@ -63,6 +63,14 @@ class ScoreKey(Box):
             'e1', 'e2', 'm1', 'm2', 'r1', 'r2', 's1', 's2'
         Val : Box
             [x-coord, y-coord, width, height, area, aspect_ratio]
+
+    score_key_metadata : dict
+        Key : str
+            'e', 'm', 'r', 's'. 
+        Val : dict 
+            K : str
+                'num_questions'
+            V : int
     
     section_code : str
         One of 'e', 'm', 'r', 's'. 
@@ -118,6 +126,13 @@ class ScoreKey(Box):
             'r2' : Box(277,  94, 163, 407),
             's1' : Box( 74, 594, 164, 407),
             's2' : Box(277, 594, 163, 407),
+        }
+
+        score_key_metadata = {
+            'e': {'num_questions': 75},
+            'm': {'num_questions': 60},
+            'r': {'num_questions': 40},
+            's': {'num_questions': 40},
         }
         
         if not isinstance(section_code, str):
