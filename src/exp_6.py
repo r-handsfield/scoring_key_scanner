@@ -32,20 +32,20 @@ pdf_image = np.asarray(pdf_image, dtype='uint8')  # <-- np array
 pdf_image = cv2.cvtColor(pdf_image, cv2.COLOR_RGB2BGR)
 
 # From Experiment 1:
-score_keys = dict.fromkeys(['e1', 'e2', 'm1', 'm2', 'r1', 'r2', 's1', 's2'])
-score_keys['e1'] = ScoreKey( 74, 223, 164, 708, 116112, 0.23164)
-score_keys['e2'] = ScoreKey(277, 223, 163, 691, 112633, 0.23589)
-score_keys['m1'] = ScoreKey( 74,  94, 300, 586, 175800, 0.51195)
-score_keys['m2'] = ScoreKey(476,  94, 300, 586, 175800, 0.51195)
-score_keys['r1'] = ScoreKey( 74,  94, 164, 407,  66748, 0.40295)
-score_keys['r2'] = ScoreKey(277,  94, 163, 407,  66341, 0.40049)
-score_keys['s1'] = ScoreKey( 74, 594, 164, 407,  66748, 0.40295)
-score_keys['s2'] = ScoreKey(277, 594, 163, 407,  66341, 0.40049)
+# score_keys = dict.fromkeys(['e1', 'e2', 'm1', 'm2', 'r1', 'r2', 's1', 's2'])
+# score_keys['e1'] = ScoreKey( 74, 223, 164, 708, 116112, 0.23164)
+# score_keys['e2'] = ScoreKey(277, 223, 163, 691, 112633, 0.23589)
+# score_keys['m1'] = ScoreKey( 74,  94, 300, 586, 175800, 0.51195)
+# score_keys['m2'] = ScoreKey(476,  94, 300, 586, 175800, 0.51195)
+# score_keys['r1'] = ScoreKey( 74,  94, 164, 407,  66748, 0.40295)
+# score_keys['r2'] = ScoreKey(277,  94, 163, 407,  66341, 0.40049)
+# score_keys['s1'] = ScoreKey( 74, 594, 164, 407,  66748, 0.40295)
+# score_keys['s2'] = ScoreKey(277, 594, 163, 407,  66341, 0.40049)
+
 
 ### Subset Score Key from page
-sk = score_keys['m2']
-x, y, w, h = sk.x, sk.y, sk.w, sk.h
-sk_image = pdf_image[y:y+h, x:x+w]
+sk = ScoreKey('m', pdf_image)
+sk_image = sk.images[1]
 gray = cv2.cvtColor(sk_image, cv2.COLOR_BGR2GRAY)
 bin = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)[1]
 inv = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)[1]
