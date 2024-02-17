@@ -126,7 +126,7 @@ for i, l in enumerate(lines):
 df_contours = pd.DataFrame(data=marks).T
 print(df_contours, '', sep='\n')
 
-# Get unique x, y valued of marker lines
+# Get unique x, y values of marker lines
 unique_x = sorted(df_contours.x.unique()) 
 unique_y = sorted(df_contours.y.unique())
 print("Unique x coordinates", unique_x, sep='\n')
