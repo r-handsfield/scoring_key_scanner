@@ -50,6 +50,10 @@ class Box():
         self.area = w * h
         self.aspect = w / h
 
+    def __str__(self):
+        s = f"(x: {x}, y: {y}, w: {w}, h: {h}, area: {area}, aspect: {aspect})"
+        return(s)
+
 
 @dataclass
 class Marker(Box):
