@@ -3,10 +3,12 @@
 
 import cv2
 import numpy as np
+import pandas as pd
 from dataclasses import dataclass
 from collections import namedtuple
 
 
+# Define OpenCV Classes
 CV_Image = 'np.ndarray[int]'
 CV_Contour = 'np.ndarray[np.ndarray[np.ndarray[int]]]'
 
@@ -49,6 +51,29 @@ class Box():
         self.aspect = w / h
 
 
+@dataclass
+class Marker(Box):
+    """
+    Represents a visual marker line within a scoring box image.
+
+    Attributes
+    ----------
+    contour : CV_Contour
+        The marker's contour (numpy array[uint8])
+
+    box : Box
+        The contour's bounding box info (x, y, w, h) along with
+        its computer area and aspect ratio.
+    """
+    def __init__(self, contour: CV_Contour) -> None:
+        """
+        Stores contour and bounding box information for 
+        """
+        x, y, w, h = cv2.boundingRect(contour)
+        self.box = Box(x, y, w, h)
+        self.contour = contour
+
+
 
 @dataclass
 class ScoreKey(Box):
@@ -71,9 +96,20 @@ class ScoreKey(Box):
             K : str
                 'num_questions'
             V : int
+
+    expected_column_names : dict
+        Key : str
+            'e', 'm', 'r', 's'. 
+        Val : list[str]
+            The name of the columns appearing in the source image of each scoring 
+            key
     
     section_code : str
         One of 'e', 'm', 'r', 's'. 
+
+    category_dataframe : pandas.DataFrame
+        Represents the scoring key boxes using boolean values instead of 
+        visual marker lines
 
     tables : list[Box]
         The expected table sizes for the section, used for subsetting the
@@ -86,7 +122,7 @@ class ScoreKey(Box):
     num_questions : int
         The number of questions in an exam section.
 
-    self.category_marks : list[CV_Contour]
+    category_marks : list[CV_Contour]
         The contours of the category marker lines for an exam section.
 
     column_names : list[str]
@@ -158,7 +194,8 @@ class ScoreKey(Box):
 
         self.num_questions = score_key_metadata.get(self.section_code)['num_questions']
         self.column_names = expected_column_names[self.section_code]
-        self.category_marks = []
+        self.category_marks = {}
+        self.category_dataframe = None
 
         self.rows : list = []
         self.columns : dict = {}
@@ -167,6 +204,7 @@ class ScoreKey(Box):
 
         self.tables[0] = expected_table_parameters[f'{section_code}1']
         self.tables[1] = expected_table_parameters[f'{section_code}2']
+
 
         if page is None:
             pass

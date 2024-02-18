@@ -5,7 +5,8 @@ from PIL import Image
 
 sys.path.append('../classes')
 sys.path.append('./test_files')
-from scoreKey import Box, ScoreKey, Column, Row
+from scoreKey import Box, Marker, ScoreKey, Column, Row
+
 
 class TestCaseBox(unittest.TestCase):
 
@@ -36,6 +37,35 @@ class TestCaseBox(unittest.TestCase):
 ### END Box
 
 
+
+class TestCaseMarker(unittest.TestCase):
+    def setUp(self):
+        image = cv2.imread('test_files/good_line.png')
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        inv = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)[1]
+        line = cv2.findContours(inv, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0][0]
+        self.marker = Marker(line)
+
+    def test_instantiation(self):
+        image = cv2.imread('test_files/good_line.png')
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        inv = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)[1]
+        contours = cv2.findContours(inv, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+        line = contours[0]
+        
+        m = Marker(line)
+        self.assertIsInstance(m, Marker)
+
+    def test_members(self):
+        m = self.marker
+        self.assertIsInstance(m.box, Box)
+        self.assertIsInstance(m.contour, np.ndarray)
+        
+
+### END Marker
+
+
+
 class TestCaseScoreKey(unittest.TestCase):
 
     def setUp(self):
@@ -57,9 +87,10 @@ class TestCaseScoreKey(unittest.TestCase):
             self.assertEqual(sk.section_code, 'e')
             self.assertEqual(sk.num_questions, 75)
             self.assertEqual(sk.column_names, ['Key', 'POW', 'KLA', 'CSE'])
-            self.assertEqual(sk.category_marks, [])
+            self.assertEqual(sk.category_marks, {})
             self.assertEqual(sk.images, [None, None])
             self.assertEqual(len(sk.tables), 2)
+            self.assertIsNone(sk.category_dataframe)
             
             for box in sk.tables:
                 self.assertIsInstance(box, Box)
@@ -206,6 +237,9 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(TestCaseBox('test_instantiation'))
     suite.addTest(TestCaseBox('test_members'))
+
+    suite.addTest(TestCaseMarker('test_instantiation'))
+    suite.addTest(TestCaseMarker('test_members'))
 
     suite.addTest(TestCaseScoreKey('test_instantiation'))
     suite.addTest(TestCaseScoreKey('method_load_page'))
