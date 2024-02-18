@@ -6,6 +6,7 @@ import os, sys, cv2
 import pickle
 import argparse
 import numpy as np
+import pandas as pd
 from os.path import join, abspath
 from dataclasses import dataclass
 import pytesseract as pt
@@ -18,7 +19,7 @@ sys.path.append('./classes')
 from classes.dewarper import Dewarper
 from classes.deshadower import Deshadower
 from classes.sheetScanner import Sheet
-from scoreKey import ScoreKey, Column
+from scoreKey import Box, Marker, ScoreKey, Column
 from sheetUtilities import SheetUtilities
 
 util = SheetUtilities()
@@ -82,7 +83,7 @@ for code in ('e', 'm', 'r', 's'):
 cv2.destroyAllWindows()
 
 
-### Find all category marks in the Scoring Boxes
+### Find all category marks in the Scoring Box images
 for code in ('e', 'm', 'r', 's'):
     sk = score_keys[code]
 
@@ -96,14 +97,25 @@ for code in ('e', 'm', 'r', 's'):
         contours = cv2.findContours(closed_inv, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
         
         markers = sk.extract_markers(contours)
-        sk.category_marks += markers
         
+
+        # Offset used to insert the values from the 2nd image into the dict
+        j0 = int(0.5*sk.num_questions + 0.5)
+        y0 = int(j0*16.66 + 0.5)
+        for j, c in enumerate(markers):
+
+            if i == 0: key = j
+            elif i == 1: key = j+j0
+            else:
+                raise ValueError("Something has gone terribly wrong.")
+            
+            sk.category_marks[key] = Marker(c)
+
         pic = image.copy()
         cv2.drawContours(pic, markers, -1, (0,0,255), 1)
         cv2.imshow(f"{code}{i+1} Markers", pic)
         # cv2.waitKey(0) 
     cv2.destroyAllWindows()
-
 
 
 ### Find the unique x, y coordinates of the category marks
@@ -112,30 +124,80 @@ for code in ('e', 'm', 'r', 's'):
     unique_x = set()
     unique_y = set()
 
-    for c in sk.category_marks:
-        x,y,w,h = cv2.boundingRect(c)
-        unique_x.add(x) # adds unique values only
-        unique_y.add(y)
+    for line in sk.category_marks.values():
+        unique_x.add(line.box.x) # adds unique values only
+        unique_y.add(line.box.y)
 
-    unique_x = list(sorted(unique_x))
-    unique_y = list(sorted(unique_y))
+    unique_x = pd.Series(sorted(unique_x))
+    unique_y = pd.Series(sorted(unique_y))
 
     # Collapse unique values that are close together
+    # - accounts for small pixel deviations
     for i in range(1, len(unique_x)):
         prev, curr = unique_x[i-1], unique_x[i]
         if util.close_to(prev, curr, 5):
              unique_x[i] = prev 
+
+    unique_x = unique_x.unique()
+    unique_y = unique_y.unique()
 
     for i in range(1, len(unique_y)):
         prev, curr = unique_y[i-1], unique_y[i]
         if util.close_to(prev, curr, 5):
             unique_y[i] = prev
 
+    sk.unique_x = list(unique_x)
+    sk.unique_y = list(unique_y)
 
-    print(len(sk.category_marks))
-    print(len(unique_x))
-    print(len(unique_y), '\n')
+    print(code, unique_x, sep=': ')
+    # print(len(sk.category_marks))
+    # print(len(unique_x))
+    # print(len(unique_y), '\n')
+
+
+### Build DataFrame to hold Category Values
+for code in ('e', 'm', 'r', 's'):
+    sk = score_keys[code]
+    column_names = sk.column_names[1:]  # Omit the 'Key' (Answers) column
+
+    num_rows = sk.num_questions
+    num_cols = len(column_names)
+
+    array = np.zeros((num_rows, num_cols), dtype='bool')
+    df = pd.DataFrame(data=array, index=range(1, num_rows+1), columns=column_names)
+    sk.category_dataframe = df
+
+    # with pd.option_context('display.max_rows', None): 
+    #     label = {'e':'English', 'm':'Math', 'r':'Reading', 's':'Science'}
+    #     print(label[code])
+    #     print(df, '\n\n')
 
 
 
+### Populate dataframe with category data based on positions of marker lines
+for code in ('e', 'm', 'r', 's'):
+    sk = score_keys[code]
+    df = sk.category_dataframe
+
+    # Create dict of x-values and column names for indexing into the Key df
+    column_names = sk.column_names[1:]  # Omit the 'Key' (Answers) column
+    col_index =  dict(zip(sk.unique_x, column_names))
+    print(col_index)
+
+    for row, mark in sk.category_marks.items():
+        x, y = mark.box.x, mark.box.y 
+
+        x = min(sk.unique_x, key=lambda el:abs(el-x)) # Align x to closest unique value
+        y = min(sk.unique_y, key=lambda el:abs(el-y)) # Align x to closest unique value
+
+        col = col_index[x]
+        # row = 1 + sk.unique_y.index(y) 
+
+        # print(i, x, y, row, col)
+        df.loc[row, col] = True
     
+    
+    with pd.option_context('display.max_rows', None): 
+        label = {'e':'English', 'm':'Math', 'r':'Reading', 's':'Science'}
+        print(label[code])
+        print(df, '\n\n') 
