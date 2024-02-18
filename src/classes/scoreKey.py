@@ -51,7 +51,9 @@ class Box():
         self.aspect = w / h
 
     def __str__(self):
-        s = f"(x: {x}, y: {y}, w: {w}, h: {h}, area: {area}, aspect: {aspect})"
+        s  = f"(x: {self.x}, y: {self.y}, "
+        s += f"w: {self.w}, h: {self.h}, "
+        s += f"area: {area}, aspect: {aspect})"
         return(s)
 
 
@@ -63,7 +65,7 @@ class Marker(Box):
     Attributes
     ----------
     contour : CV_Contour
-        The marker's contour (numpy array[uint8])
+        The marker's contour (numpy array[uint8]).
 
     box : Box
         The contour's bounding box info (x, y, w, h) along with
