@@ -61,7 +61,6 @@ class TestCaseMarker(unittest.TestCase):
         self.assertIsInstance(m.box, Box)
         self.assertIsInstance(m.contour, np.ndarray)
         
-
 ### END Marker
 
 
@@ -87,7 +86,11 @@ class TestCaseScoreKey(unittest.TestCase):
             self.assertEqual(sk.section_code, 'e')
             self.assertEqual(sk.num_questions, 75)
             self.assertEqual(sk.column_names, ['Key', 'POW', 'KLA', 'CSE'])
-            self.assertEqual(sk.category_marks, {})
+
+            self.assertIsInstance(sk.category_marks, dict)
+            self.assertEqual(len(sk.category_marks), 75)
+            self.assertEqual(sk.category_marks[1], [])
+            
             self.assertEqual(sk.images, [None, None])
             self.assertEqual(len(sk.tables), 2)
             self.assertIsNone(sk.category_dataframe)

@@ -128,8 +128,12 @@ class ScoreKey(Box):
     num_questions : int
         The number of questions in an exam section.
 
-    category_marks : list[CV_Contour]
-        The contours of the category marker lines for an exam section.
+    category_marks : dict
+        Key : int
+            A question number
+        Val : list[Marker]
+            Marker objects containing position and contour info of category
+            marker lines.
 
     column_names : list[str]
         String names of all the columns, used when creating the DataFrame.
@@ -200,7 +204,9 @@ class ScoreKey(Box):
 
         self.num_questions = score_key_metadata.get(self.section_code)['num_questions']
         self.column_names = expected_column_names[self.section_code]
-        self.category_marks = {}
+
+        self.category_marks = dict.fromkeys(range(1, self.num_questions+1), [])
+
         self.category_dataframe = None
 
         self.rows : list = []
