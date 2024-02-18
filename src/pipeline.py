@@ -96,63 +96,90 @@ for code in ('e', 'm', 'r', 's'):
 
         contours = cv2.findContours(closed_inv, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
         
-        markers = sk.extract_markers(contours)
+        lines = sk.extract_markers(contours)
+        markers = [None] * len(lines)
+        for j, c in enumerate(lines):
+            markers[j] = Marker(c)
+
+        # Find the unique x, y coordinates of the category marks
+        unique_x = set()
+        unique_y = set()
+
+        for m in markers:
+            unique_x.add(m.box.x) # adds unique values only
+            unique_y.add(m.box.y)
+
+        unique_x = pd.Series(sorted(unique_x))
+        unique_y = pd.Series(sorted(unique_y))
+
+        # Collapse unique values that are close together
+        #   - accounts for small pixel deviations
+        for j in range(1, len(unique_x)):
+            prev, curr = unique_x[j-1], unique_x[j]
+            if util.close_to(prev, curr, 5):
+                unique_x[j] = prev 
+        unique_x = unique_x.unique()
+
+        for j in range(1, len(unique_y)):
+            prev, curr = unique_y[j-1], unique_y[j]
+            if util.close_to(prev, curr, 5):
+                unique_y[j] = prev
+        unique_y = unique_y.unique()
+
+        # Take x-values from first image only        
+        if i == 0: sk.unique_x = list(unique_x)
+
+        # Take y-values from current image
+        sk.unique_y = list(unique_y)
+
+        # num_rows = len(sk.unique_y)
+        # exp_rows = int(0.5 * sk.num_questions +0.5)
+
+        # print(i)
+        # print(len(unique_x))
+        # print(len(unique_y))
+        print(code, unique_x, sep=': ')
+
+        row_index = dict(zip(unique_y, range(1, len(unique_y)+1)))
+        if i == 1:
+            j0 = int(0.5 * sk.num_questions + 0.5)
+            row_index = {k:v+j0 for (k,v) in row_index.items()}
+
+        # print(row_index, '\n')
         
+        # Align marker (x, y) to closest unique values
+        for m in markers:
+            x = m.box.x
+            x = min(sk.unique_x, key=lambda el:abs(el-x))
+            # print(code, " x:", m.box.x, '->', x)
+            m.box.x = x
 
-        # Offset used to insert the values from the 2nd image into the dict
-        j0 = int(0.5*sk.num_questions + 0.5)
-        y0 = int(j0*16.66 + 0.5)
-        for j, c in enumerate(markers):
+            y = m.box.y 
+            y = min(sk.unique_y, key=lambda el:abs(el-y))
+            m.box.y = y
 
-            if i == 0: key = j
-            elif i == 1: key = j+j0
+        # Insert line marker into appropriate question
+        for m in markers:
+            key = row_index[m.box.y]
+            # print(i, j, y, key, sk.category_marks[key])
+            if sk.category_marks[key]:
+                sk.category_marks[key].append(m)
             else:
-                raise ValueError("Something has gone terribly wrong.")
-            
-            sk.category_marks[key] = Marker(c)
+                sk.category_marks[key] = [m]
 
         pic = image.copy()
-        cv2.drawContours(pic, markers, -1, (0,0,255), 1)
+        cv2.drawContours(pic, lines, -1, (0,0,255), 1)
         cv2.imshow(f"{code}{i+1} Markers", pic)
         # cv2.waitKey(0) 
     cv2.destroyAllWindows()
+    for k, marks in sk.category_marks.items():
+        for m in marks:
+            print(code, ': ', k, m.box.x) 
+    print('\n----------------------------------------------------------------\n')
+
+    
 
 
-### Find the unique x, y coordinates of the category marks
-for code in ('e', 'm', 'r', 's'):
-    sk = score_keys[code]
-    unique_x = set()
-    unique_y = set()
-
-    for line in sk.category_marks.values():
-        unique_x.add(line.box.x) # adds unique values only
-        unique_y.add(line.box.y)
-
-    unique_x = pd.Series(sorted(unique_x))
-    unique_y = pd.Series(sorted(unique_y))
-
-    # Collapse unique values that are close together
-    # - accounts for small pixel deviations
-    for i in range(1, len(unique_x)):
-        prev, curr = unique_x[i-1], unique_x[i]
-        if util.close_to(prev, curr, 5):
-             unique_x[i] = prev 
-
-    unique_x = unique_x.unique()
-    unique_y = unique_y.unique()
-
-    for i in range(1, len(unique_y)):
-        prev, curr = unique_y[i-1], unique_y[i]
-        if util.close_to(prev, curr, 5):
-            unique_y[i] = prev
-
-    sk.unique_x = list(unique_x)
-    sk.unique_y = list(unique_y)
-
-    print(code, unique_x, sep=': ')
-    # print(len(sk.category_marks))
-    # print(len(unique_x))
-    # print(len(unique_y), '\n')
 
 
 ### Build DataFrame to hold Category Values
@@ -182,19 +209,16 @@ for code in ('e', 'm', 'r', 's'):
     # Create dict of x-values and column names for indexing into the Key df
     column_names = sk.column_names[1:]  # Omit the 'Key' (Answers) column
     col_index =  dict(zip(sk.unique_x, column_names))
-    print(col_index)
+    print(code, col_index)
 
-    for row, mark in sk.category_marks.items():
-        x, y = mark.box.x, mark.box.y 
+    for row, marks in sk.category_marks.items():
+        for mark in marks:
+            x, y = mark.box.x, mark.box.y 
+    
+            col = col_index[x]
 
-        x = min(sk.unique_x, key=lambda el:abs(el-x)) # Align x to closest unique value
-        y = min(sk.unique_y, key=lambda el:abs(el-y)) # Align x to closest unique value
-
-        col = col_index[x]
-        # row = 1 + sk.unique_y.index(y) 
-
-        # print(i, x, y, row, col)
-        df.loc[row, col] = True
+            # print(i, x, y, row, col)
+            df.loc[row, col] = True
     
     
     with pd.option_context('display.max_rows', None): 
