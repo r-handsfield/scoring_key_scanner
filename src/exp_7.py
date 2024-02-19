@@ -105,7 +105,7 @@ for i, l in enumerate(lines):
 
     marks[i] = {'x':x, 'y':y, 'w':w, 'h':h, 'area':area, 'aspect':aspect}
 
-### DataFrame Version ######################################################yy
+### DataFrame Version ######################################################
 # 
 # This version builds dataframes and interates through them to match the
 # marker position to a question and category.
