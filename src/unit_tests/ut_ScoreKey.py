@@ -60,6 +60,8 @@ class TestCaseMarker(unittest.TestCase):
         m = self.marker
         self.assertIsInstance(m.box, Box)
         self.assertIsInstance(m.contour, np.ndarray)
+        self.assertIsNone(m.column)
+        self.assertIsNone(m.row)
         
 ### END Marker
 

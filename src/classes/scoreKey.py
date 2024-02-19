@@ -70,6 +70,12 @@ class Marker(Box):
     box : Box
         The contour's bounding box info (x, y, w, h) along with
         its computer area and aspect ratio.
+
+    column : str
+        The name of the column in which the marker resides.
+
+    row : int
+        The 1-indexed row number at which the marker resides.
     """
     def __init__(self, contour: CV_Contour) -> None:
         """
@@ -78,7 +84,8 @@ class Marker(Box):
         x, y, w, h = cv2.boundingRect(contour)
         self.box = Box(x, y, w, h)
         self.contour = contour
-
+        self.column = None
+        self.row = None
 
 
 @dataclass
@@ -314,7 +321,7 @@ class ScoreKey(Box):
         Parameters
         ----------
         contours : list[CV_Contour]
-            The list of candidate contours
+            The list of candidate contours returned by cv2.findContours( ... )
 
         Returns
         -------
@@ -324,6 +331,11 @@ class ScoreKey(Box):
         markers = list(filter(self.filter_markers, list(contours)))
         return markers
 
+    
+    def get_unique_(self):
+        """
+        """
+        pass
 
 
 @dataclass()
