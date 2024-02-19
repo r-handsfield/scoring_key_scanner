@@ -146,6 +146,17 @@ class TestCaseScoreKey(unittest.TestCase):
         pass
 
 
+    def method_get_marker_contours(self):
+        sk = self.scoreKey
+        contours = sk.get_marker_contours(sk.images[0])
+        self.assertEqual(len(contours), 38)
+        self.assertIsInstance(contours, tuple)
+        self.assertIsInstance(contours[0], np.ndarray)
+        self.assertIsInstance(contours[0][0], np.ndarray)
+        self.assertIsInstance(contours[0][0][0], np.ndarray)
+        self.assertIsInstance(contours[0][0][0][0], np.int32)
+
+
     def method_filter_markers(self):
         sk = self.scoreKey
         image = cv2.imread('test_files/good_line.png')
