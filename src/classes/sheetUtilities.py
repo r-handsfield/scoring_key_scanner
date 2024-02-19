@@ -194,9 +194,9 @@ class SheetUtilities():
         Extracts unique features from a 1D vector.
 
         Graphical features in the same row or col can have slightly different
-        pixel coordinates. This method grabs the unique coordinates and combines
-        values that are within 1 delta of each other by extracting the final 
-        value within +/- 1 delta.
+        pixel coordinates. This method grabs the unique coordinates and 
+        collapses values that are within 1 delta of each other by extracting 
+        the final value within +/- 1 delta.
 
         Parameters
         ----------
