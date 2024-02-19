@@ -53,7 +53,7 @@ class Box():
     def __str__(self):
         s  = f"(x: {self.x}, y: {self.y}, "
         s += f"w: {self.w}, h: {self.h}, "
-        s += f"area: {area}, aspect: {aspect})"
+        s += f"area: {self.area}, aspect: {self.aspect})"
         return(s)
 
 
