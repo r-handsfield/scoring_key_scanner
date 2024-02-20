@@ -84,12 +84,17 @@ class TestCaseSheetUtilities(unittest.TestCase):
 
 
     def test_method_extract_unique_1D(self):
-        vector = [11, 11, 12, 13, 25, 26, 26, 31, 32, 33]
-        truth = [13, 26, 33]
+        with self.subTest("Ordered list"):
+            vector = [11, 11, 12, 13, 25, 26, 26, 31, 32, 33]
+            truth = [13, 26, 33]
+            unique = self.su.extract_unique_1D(vector, 4)
+            self.assertEqual(unique, truth)
 
-        unique = self.su.extract_unique_1D(vector, 4)
-
-        self.assertEqual(unique, truth)
+        with self.subTest("Unordered list"):
+            vector = [33, 13, 11, 12, 25, 26, 31, 26, 11, 32]
+            truth = [13, 26, 33]
+            unique = self.su.extract_unique_1D(vector, 4)
+            self.assertEqual(unique, truth)
 
 
 

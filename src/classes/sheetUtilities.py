@@ -191,7 +191,8 @@ class SheetUtilities():
                             delta: int
     ) -> List[int]:
         """
-        Extracts unique features from a 1D vector.
+        Extracts unique features from a 1D vector and implicitly sorts them 
+        low to high.
 
         Graphical features in the same row or col can have slightly different
         pixel coordinates. This method grabs the unique coordinates and 
