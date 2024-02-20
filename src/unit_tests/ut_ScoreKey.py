@@ -146,10 +146,19 @@ class TestCaseScoreKey(unittest.TestCase):
         pass
 
 
-    def method_get_marker_contours(self):
+    def method_get_contours(self):
         sk = self.scoreKey
-        contours = sk.get_marker_contours(sk.images[0])
-        self.assertEqual(len(contours), 38)
+        image = cv2.imread('test_files/good_line.png')
+
+        contours = sk.get_contours(image)
+
+        if False:
+            cv2.drawContours(image, contours, -1, (0,0,255), 1)
+            cv2.imshow("contours", image)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
+
+        self.assertEqual(len(contours), 1)
         self.assertIsInstance(contours, tuple)
         self.assertIsInstance(contours[0], np.ndarray)
         self.assertIsInstance(contours[0][0], np.ndarray)
@@ -259,6 +268,7 @@ def suite():
 
     suite.addTest(TestCaseScoreKey('test_instantiation'))
     suite.addTest(TestCaseScoreKey('method_load_page'))
+    suite.addTest(TestCaseScoreKey('method_get_contours'))
     suite.addTest(TestCaseScoreKey('method_filter_markers'))
     suite.addTest(TestCaseScoreKey('method_extract_markers'))
 

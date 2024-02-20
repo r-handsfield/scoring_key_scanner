@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 from dataclasses import dataclass
 from collections import namedtuple
+from typing import Union, List, Tuple, Dict, NoReturn, Any
 
 
 # Define OpenCV Classes
@@ -280,6 +281,55 @@ class ScoreKey(Box):
 
         return True
     
+
+    def get_contours(self, image: CV_Image, 
+                            min: int=250, 
+                            max: int=255,
+                            kernel: Tuple[int]=(5,1)
+    ) -> Tuple[CV_Contour]:
+        """
+        Extracts from an image all contours after performing the following 
+        operations:
+        
+        (1) Morphological Closing using the (width, height) kernel
+        (2) Binary Threshold using the min and max parameters
+        (3) Finding all contours
+
+        The kernel is expected to be a horizontal line, and convolving it with
+        the image emphasizes the horizontal marker lines within the image.
+
+        Parameters
+        ----------
+        image : CV_Image
+            A numpy ndarray representing an image
+
+        min : int
+            The threshold to use for the Binary Threshold operation
+
+        max : int
+            The max pixel intensity to use for the Binary Threshold operation
+
+        kernel : Tuple[int, int]
+            A solid rectangle of (width, height) that is convolved with the 
+            image during the Morphological Closing operation. The convolution
+            emphasizes contours of similar shapes, and the kernel is 
+            expected to be a horizontal line: w >> h.
+
+        Returns
+        -------
+        tuple(CV_Contour)
+            A collection of OpenCV contours
+        """
+        if len(image.shape) == 3:
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+        cv_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, kernel)
+        closed = cv2.morphologyEx(image, cv2.MORPH_CLOSE, cv_kernel)
+        closed_inv = cv2.threshold(closed, min, max, cv2.THRESH_BINARY_INV)[1]
+        contours = cv2.findContours(closed_inv, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+
+        return contours
+
 
     def filter_markers(self, contour: CV_Contour) -> bool:
         """
