@@ -88,40 +88,17 @@ for code in ('e', 'm', 'r', 's'):
     sk = score_keys[code]
 
     for i, image in enumerate(sk.images):
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5,1))
-        closed = cv2.morphologyEx(gray, cv2.MORPH_CLOSE, kernel)
-        closed_bin = cv2.threshold(closed, 250, 255, cv2.THRESH_BINARY)[1]
-        closed_inv = cv2.threshold(closed, 250, 255, cv2.THRESH_BINARY_INV)[1]
-
-        contours = cv2.findContours(closed_inv, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+        contours = sk.get_contours(image, 250, 255, kernel=(5,1))
         
         markers = sk.extract_markers(contours)
         markers = [Marker(c) for c in markers] # Unordered list
 
         # Find the unique x, y coordinates of the category marks
-        unique_x = set()
-        unique_y = set()
-
-        for m in markers:
-            unique_x.add(m.box.x) # adds unique values only
-            unique_y.add(m.box.y)
-
-        sk.unique_x = util.extract_unique_1D(list(unique_x), 5)
-        sk.unique_y = util.extract_unique_1D(list(unique_y), 5)
-
+        sk.unique_x = util.extract_unique_1D([m.box.x for m in markers], 5)
+        sk.unique_y = util.extract_unique_1D([m.box.y for m in markers], 5)
         # print(i, code, sk.unique_x, sep=': ')
-
-        column_names = sk.column_names[1:]  # Omit the 'Key' (Answers) column
-        col_index =  dict(zip(sk.unique_x, column_names))
-
-        row_index = dict(zip(sk.unique_y, range(1, len(sk.unique_y)+1)))
-        if i == 1:
-            j0 = int(0.5 * sk.num_questions + 0.5)
-            row_index = {k:v+j0 for (k,v) in row_index.items()}
-
-
-         # Align marker (x, y) to closest unique values
+        
+        # Align marker (x, y) to closest unique values
         for m in markers:
             x = m.box.x
             x = min(sk.unique_x, key=lambda el:abs(el-x))
@@ -133,6 +110,17 @@ for code in ('e', 'm', 'r', 's'):
             m.box.y = y
 
 
+        # Create indexing dicts
+        column_names = sk.column_names[1:]  # Omit the 'Key' (Answers) column
+        col_index =  dict(zip(sk.unique_x, column_names))
+
+        row_index = dict(zip(sk.unique_y, range(1, len(sk.unique_y)+1)))
+        # offset for merging 1st & 2nd image questions into single collection
+        if i == 1:
+            j0 = int(0.5 * sk.num_questions + 0.5)
+            row_index = {k:v+j0 for (k,v) in row_index.items()}
+
+        # Insert row and column values into each Marker
         for m in markers:
             m.row = row_index[m.box.y]
             m.column = col_index[m.box.x]
@@ -141,9 +129,7 @@ for code in ('e', 'm', 'r', 's'):
         #     print(i, m.row, m.column, m.box)
         # print('---\n')
             
-       
-
-        # # Insert line marker into appropriate question
+        # Insert line marker into appropriate question
         for m in markers:
             key = row_index[m.box.y]
             key = m.row
@@ -153,6 +139,7 @@ for code in ('e', 'm', 'r', 's'):
             else:
                 sk.category_marks[key] = [m]
 
+        # Show extracted markers
         pic = image.copy()
         lines = [m.contour for m in markers]
         cv2.drawContours(pic, lines, -1, (0,0,255), 1)
