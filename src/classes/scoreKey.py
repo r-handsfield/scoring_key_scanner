@@ -196,10 +196,10 @@ class ScoreKey(Box):
         }
 
         expected_column_names = {
-            'e': ['Key', 'POW', 'KLA', 'CSE'],
-            'm': ['Key', 'PHM-N', 'PHM-A', 'PHM-F', 'PHM-G', 'PHM-S', 'IES', 'MDL'],
-            'r': ['Key', 'KID', 'CS', 'IKI'],
-            's': ['Key', 'IOD', 'SIN', 'EMI']
+            'e': ["Key", "POW", "KLA", "CSE"],
+            'm': ["Key", "PHM-N", "PHM-A", "PHM-F", "PHM-G", "PHM-S", "IES", "MDL"],
+            'r': ["Key", "KID", "CS", "IKI"],
+            's': ["Key", "IOD", "SIN", "EMI"]
         }
         
         if not isinstance(section_code, str):
