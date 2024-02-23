@@ -26,6 +26,7 @@ util = SheetUtilities()
 
 ### Get CLI arguments
 ap = argparse.ArgumentParser()
+ap.add_argument('--test_code', '-tc', required=True, help='test code in yyyymm format')
 ap.add_argument('--pdf_path', '-p', required=True, help='path/to/pdf_file')
 args = ap.parse_args()
 
@@ -147,14 +148,51 @@ for code in ('e', 'm', 'r', 's'):
         # cv2.waitKey(0) 
     cv2.destroyAllWindows()
 
-    # for marks in sk.category_marks.values():
-    #     for m in marks:
-    #         print(code, m.row, m.column, m.box)
-
-    # print('\n----------------------------------------------------------------\n')
+    for k, marks in sk.category_marks.items():
+        for m in marks:
+            print(code, k, m.row, m.column)
+    print('\n----------------------------------------------------------------\n')
     # A-OK here
 
+### Build dict to hold template values
+all_template_values = {'test_code':f'"{str(args.test_code)}"'}
+for code in ('e', 'm', 'r', 's'):
+    sk = score_keys.get(code)
+    template_values = {}
+    
+    for q, marks in sk.category_marks.items():
+        key = f"{code}C{q}"
+        # cats = str([m.column for m in marks])
+        # cats = cats.replace(['[',']'], '') # for json compliance
+        cats = ''
+        for j, m in enumerate(marks):
+            cats += f'"{m.column}"' 
+            if j < len(marks)-1:
+                cats += ', '
 
+        cats = cats.replace("'", '"') # for json compliance
+        template_values[key] = cats
+
+    all_template_values.update(template_values)
+    print(code)
+
+for k,v in all_template_values.items():
+    print(k,v)
+
+### Insert 
+from jinja2 import Environment, FileSystemLoader
+env = Environment(loader=FileSystemLoader('./categories'))
+template = env.get_template( "cat_ACT_Official.json" )
+json_string = template.render(all_template_values)
+print('')
+print(json_string)
+
+outfile = f'categories/cat_ACT_{args.test_code}.json'
+with open(outfile, 'w') as f:
+    f.write(json_string)
+
+
+sys.exit()
 
 
 ### Build DataFrame to hold Category Values
