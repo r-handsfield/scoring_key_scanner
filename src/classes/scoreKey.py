@@ -217,8 +217,8 @@ class ScoreKey(Box):
 
         self.category_dataframe = None
 
-        self.rows : list = []
-        self.columns : dict = {}
+        # self.rows : list = []
+        # self.columns : dict = {}
         self.tables = [None, None]
         self.images = [None, None]
 
