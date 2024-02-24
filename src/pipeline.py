@@ -76,12 +76,12 @@ score_keys['m'] = ScoreKey('m', images['m'])
 score_keys['r'] = ScoreKey('r', images['r'])
 score_keys['s'] = ScoreKey('s', images['s'])
 
-for code in ('e', 'm', 'r', 's'):
-    cv2.imshow(f'{code}1', score_keys[code].images[0])
-    cv2.imshow(f'{code}2', score_keys[code].images[1])
-    if cv2.waitKey(0) == 27:
-        break
-cv2.destroyAllWindows()
+# for code in ('e', 'm', 'r', 's'):
+# #     cv2.imshow(f'{code}1', score_keys[code].images[0])
+# #     cv2.imshow(f'{code}2', score_keys[code].images[1])
+# #     if cv2.waitKey(0) == 27:
+# #         break
+# # cv2.destroyAllWindows()
 
 
 ### Find all category marks in the Scoring Box images
