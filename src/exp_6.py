@@ -19,6 +19,24 @@ from sheetUtilities import SheetUtilities
 
 util = SheetUtilities()
 
+# Filter function for identifying the horizontal marker lines
+def filter_fcn(contour):
+    c = contour
+    x,y,w,h = cv2.boundingRect(c)
+    area = w*h
+    aspect = float(w)/h
+
+    if (
+        aspect < 1 or 
+        area < 20 or
+        w < 5 or w > 30 or h > 3 or
+        y < 80 or x < 60
+    ):
+        return False
+    else:
+        return True
+
+
 PATH_E = abspath("./images/ske.pdf")
 PATH_M = abspath("./images/skm.pdf")
 PATH_R = abspath("./images/skr.pdf")
@@ -46,9 +64,6 @@ pdf_image = cv2.cvtColor(pdf_image, cv2.COLOR_RGB2BGR)
 ### Subset Score Key from page
 sk = ScoreKey('m', pdf_image)
 sk_image = sk.images[1]
-gray = cv2.cvtColor(sk_image, cv2.COLOR_BGR2GRAY)
-bin = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)[1]
-inv = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)[1]
 
 # Find number row postions
 for q in range(38):
@@ -65,6 +80,22 @@ for q in range(38):
         break
 
 
+# Find contours and filter the horizontal marker lines from the candidates
+gray = cv2.cvtColor(sk_image, cv2.COLOR_BGR2GRAY)
+bin = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)[1]
+inv = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)[1]
+contours = cv2.findContours(inv, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+
+pic = sk_image.copy()
+cv2.drawContours(pic, contours, -1, (0,0,255), 1)
+cv2.imshow("All Contours", pic)
+
+lines = list(filter(filter_fcn, list(contours)))
+pic = sk_image.copy()
+cv2.drawContours(pic, lines, -1, (0,0,255), 1)
+cv2.imshow("Lines from All Contours", pic)
+cv2.waitKey(0)
+
 
 # Close contours to improve line detection
 # Kernel is a horizontal line (cols, rows)
@@ -73,35 +104,22 @@ closed = cv2.morphologyEx(gray, cv2.MORPH_CLOSE, kernel)
 closed_bin = cv2.threshold(closed, 250, 255, cv2.THRESH_BINARY)[1]
 closed_inv = cv2.threshold(closed, 250, 255, cv2.THRESH_BINARY_INV)[1]
 
+# the image after the closing
+cv2.imshow("Before Convolution", gray)
+cv2.imshow("After Convolution", closed)
+
 contours = cv2.findContours(closed_inv, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
 candidates = list(contours)
 
-
-### Filter the marker lines using a function
-def filter_fcn(contour):
-    c = contour
-    x,y,w,h = cv2.boundingRect(c)
-    area = w*h
-    aspect = float(w)/h
-
-    if (
-        aspect < 1 or 
-        area < 20 or
-        w < 5 or w > 30 or h > 3 or
-        y < 80 or x < 60
-    ):
-        return False
-    else:
-        return True
-    
+ 
 # the marker lines
-lines = list(filter(filter_fcn, list(contours)))
+lines = list(filter(filter_fcn, list(candidates)))
 print(len(lines))
 
 pic = gray.copy()
 pic = cv2.cvtColor(pic, cv2.COLOR_GRAY2BGR)
 cv2.drawContours(pic, lines, -1, (0,0,255), 1)
-cv2.imshow("Marker Lines", pic)
+cv2.imshow("Marker Lines after Convolution", pic)
 
 cv2.waitKey(0)
 # cv2.destroyAllWindows()
