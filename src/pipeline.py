@@ -70,7 +70,7 @@ images['score_table'] = pils[3]
 
 ### Extract the Scorekeys from Each Page
 # @TODO Extract the Scoring Table from final page
-score_keys = dict.fromkeys(['e1', 'e2', 'm1', 'm2', 'r1', 'r2', 's1', 's2'])
+score_keys = {}
 score_keys['e'] = ScoreKey('e', images['e'])
 score_keys['m'] = ScoreKey('m', images['m'])
 score_keys['r'] = ScoreKey('r', images['r'])
