@@ -54,7 +54,7 @@ class Box():
     def __str__(self):
         s  = f"(x: {self.x}, y: {self.y}, "
         s += f"w: {self.w}, h: {self.h}, "
-        s += f"area: {self.area}, aspect: {self.aspect})"
+        s += f"area: {self.area}, aspect: {round(self.aspect, 5)})"
         return(s)
 
 
@@ -217,8 +217,6 @@ class ScoreKey(Box):
 
         self.category_dataframe = None
 
-        # self.rows : list = []
-        # self.columns : dict = {}
         self.tables = [None, None]
         self.images = [None, None]
 
