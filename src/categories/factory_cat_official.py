@@ -150,7 +150,7 @@ def generate_section(sid, numQ, comma=True):
         m += sp21 + '"6":["", ""]\n'
         m += sp19 + '},\n\n'
 
-        m += sp8 + '"passage-breaks":["", "", "", "", "", ""],\n\n'
+        m += sp8 + '"passage-breaks":["1", "", "", "", "", ""],\n\n'
 
 
     m += generate_questions(sid, numQ)
@@ -182,7 +182,7 @@ m += generate_section('s', 40, False)
 m += '}'
 
 
-outfile = f'cat_ACT_{args.test_code}.json'
+outfile = f'cat_ACT_Official{args.test_code}.json'
 with open(outfile, 'w') as f:
     print(m, file=f)
 
