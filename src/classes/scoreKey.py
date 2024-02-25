@@ -339,9 +339,9 @@ class ScoreKey(Box):
         aspect = float(w)/h
 
         if (
-            aspect < 1 or 
+            aspect < 2 or 
             area < 20 or
-            w < 5 or w > 30 or h > 3 or
+            w < 15 or w > 30 or h > 5 or
             y < 80 or x < 60
         ):
             return False

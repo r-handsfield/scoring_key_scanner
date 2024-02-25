@@ -41,10 +41,11 @@ for i, p in enumerate(refs):
     p = np.asarray(p, dtype='uint8')
     refs[i] = p
 
-
 ### Get PDF pages, convert to each PNG
 pils = convert_from_path(PATH)#[0]  # <-- PIL Image
 for i, p in enumerate(pils):
+    if i > 3:
+        break
     p = p.resize((850, 1100))
     p = np.asanyarray(p, dtype='uint8')
     p = cv2.cvtColor(p, cv2.COLOR_RGB2BGR)
@@ -76,12 +77,12 @@ score_keys['m'] = ScoreKey('m', images['m'])
 score_keys['r'] = ScoreKey('r', images['r'])
 score_keys['s'] = ScoreKey('s', images['s'])
 
-# for code in ('e', 'm', 'r', 's'):
-# #     cv2.imshow(f'{code}1', score_keys[code].images[0])
-# #     cv2.imshow(f'{code}2', score_keys[code].images[1])
-# #     if cv2.waitKey(0) == 27:
-# #         break
-# # cv2.destroyAllWindows()
+for code in ('e', 'm', 'r', 's'):
+    cv2.imshow(f'{code}1', score_keys[code].images[0])
+    cv2.imshow(f'{code}2', score_keys[code].images[1])
+    if cv2.waitKey(0) == 27:
+        break
+cv2.destroyAllWindows()
 
 
 ### Find all category marks in the Scoring Box images
@@ -90,8 +91,36 @@ for code in ('e', 'm', 'r', 's'):
 
     for i, image in enumerate(sk.images):
         contours = sk.get_contours(image, 250, 255, kernel=(5,1))
+
+        for j,c in enumerate(contours):
+            x,y,w,h = cv2.boundingRect(c)
+            area = w*h
+            aspect = round(float(w)/h, 5)
+            print(f"{j}\tx:{x}, y:{y}, w:{w}, h:{h}, area:{area}, aspect:{aspect}")
+
+            pic = sk.images[i].copy()
+            cv2.drawContours(pic, [c], -1, (0,0,255), 1)
+            cv2.imshow("Contour", pic)
+            if cv2.waitKey(0) == 27:
+                break
+            cv2.destroyAllWindows()
         
+        sys.exit()
         markers = sk.extract_markers(contours)
+
+        # debugging loop
+        for j, c in enumerate(markers):
+            x,y,w,h = cv2.boundingRect(c)
+            area = w*h
+            aspect = round(float(w)/h, 3)
+            print(f"x:{x}  y:{y}  w:{w}  h:{h}  area:{area}  aspect:{aspect}")
+            pic = sk.images[i].copy()
+            cv2.drawContours(pic, [c], -1, (0,0,255), 1)
+            cv2.imshow("Marker", pic)
+            if cv2.waitKey(0) == 27:
+                break
+            cv2.destroyAllWindows()
+        
         markers = [Marker(c) for c in markers] # Unordered list
 
         # Find the unique x, y coordinates of the category marks
@@ -145,7 +174,7 @@ for code in ('e', 'm', 'r', 's'):
         lines = [m.contour for m in markers]
         cv2.drawContours(pic, lines, -1, (0,0,255), 1)
         cv2.imshow(f"{code}{i+1} Markers", pic)
-        # cv2.waitKey(0) 
+        cv2.waitKey(0) 
     cv2.destroyAllWindows()
 
     for k, marks in sk.category_marks.items():
