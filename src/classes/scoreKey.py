@@ -146,13 +146,6 @@ class ScoreKey(Box):
     column_names : list[str]
         String names of all the columns, used when creating the DataFrame.
 
-    columns : list[Column]
-        All the columns of the Scoring Key, ordered from left to right. A 
-        "column" is the box containing the data; it excludes the heading box.
-
-    rows : list[Row]
-        All the rows of the Scoring Key, ordered from top to bottom.
-
     boxes : list[Box]
         The locations and sizes of the Scoring Key boxes.
 
@@ -228,22 +221,6 @@ class ScoreKey(Box):
             pass
         elif isinstance(page, np.ndarray):
             self.load_page(page)
-            # w, h = page.shape[1], page.shape[0]
-
-            # if w != 850 or h != 1100:
-            #     raise TypeError(f"The page must be 850 x 1100 pixels, not {w} x {h}.")
-            # if len(page.shape) < 3:
-            #     page = cv2.cvtColor(page, cv2.COLOR_GRAY2BGR)
-
-            # x, y = self.tables[0].x, self.tables[0].y
-            # w, h = self.tables[0].w, self.tables[0].h
-            # box = page[y:y+h, x:x+w]
-            # self.images[0] = box 
-
-            # x, y = self.tables[1].x, self.tables[1].y
-            # w, h = self.tables[1].w, self.tables[1].h
-            # box = page[y:y+h, x:x+w]
-            # self.images[1] = box 
         else:
             raise TypeError(f"Page must be a numpy array of integers, not a {type(page)}.")
 
@@ -325,6 +302,16 @@ class ScoreKey(Box):
         closed = cv2.morphologyEx(image, cv2.MORPH_CLOSE, cv_kernel)
         closed_inv = cv2.threshold(closed, min, max, cv2.THRESH_BINARY_INV)[1]
         contours = cv2.findContours(closed_inv, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+
+        # cv2.imshow("Inverted", closed_inv)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+
+        # pic = closed.copy()
+        # pic = cv2.cvtColor(pic, cv2.COLOR_GRAY2BGR)
+        # cv2.drawContours(pic, contours, -1, (0,0,255), 1)
+        # cv2.imshow("All Contours", pic)
+        # cv2.waitKey(0)
 
         return contours
 
