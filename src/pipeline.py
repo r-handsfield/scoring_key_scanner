@@ -86,6 +86,8 @@ cv2.destroyAllWindows()
 
 
 ### Find all category marks in the Scoring Box images
+# @TODO Denoise the photo images and erode the convolution before 
+# extracting contours
 for code in ('e', 'm', 'r', 's'):
     sk = score_keys[code]
 
@@ -216,7 +218,7 @@ json_string = template.render(all_template_values)
 print('')
 print(json_string)
 
-outfile = f'categories/cat_ACT_{args.test_code}.json'
+outfile = f'categories/cat_ACT_Official_{args.test_code}.json'
 with open(outfile, 'w') as f:
     f.write(json_string)
 
