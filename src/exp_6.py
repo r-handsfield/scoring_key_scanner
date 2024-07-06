@@ -300,7 +300,6 @@ print("Category Array", cat_array, '', sep='\n')
 #
 
 sys.exit()
-sys.exit()
 print("### Begin Dict Version \n")
 
 # Sort by y, x for convenience

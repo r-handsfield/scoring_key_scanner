@@ -117,7 +117,7 @@ Identifying horizontal marker lines by a Hough Line Transform appears to fail re
 | <img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/41_row_positions.png" alt="Fig. 7" />  | <img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/42_hough_lines.png" alt="Fig. 8" />  |
 
 ### 5 Extracting All ScoreKey Pages from a Single PDF
-Previous experiments have shown that the ScoreKey images (2 per page) can be extracted from a 1-page PDF, which contains the ScoreKeys for a single ACT section. It would be very convenient to use a single PDF containing the ScoreKeys for all the sections, rather than a collection of 4 single-page PDFs.
+Previous experiments have shown that the ScoreKey images (2 per page) can be extracted from a 1-page PDF that contains the ScoreKeys for a single ACT section. It would be very convenient to use a single PDF containing the ScoreKeys for all the sections, rather than a collection of 4 single-page PDFs.
 
 #### 5 Method
 1) Load a multi-page PDF document
@@ -126,18 +126,23 @@ Previous experiments have shown that the ScoreKey images (2 per page) can be ext
 4) Orthogonalize each CV_Image
 
 #### 5 Results
-This turned out to be really easy. The `pdf2image` library contains built-in functions that load a pdf and burst the pages as `PIL` images into an iterable. Resizing the pages is also done in-library and orthogonalizing is done with an OpenCV pipeline after converting the `PIL` images to numpy arrays.
+This turned out to be really easy. The `pdf2image` library contains built-in functions that load a pdf and burst the pages as `PIL` images into an iterable. Resizing the pages is also done in-library and orthogonalizing is done with an `OpenCV` pipeline after converting the `PIL` images to numpy arrays.
 
 ### 6 Finding Marker Lines by Contour Filtering
-The Hough Line Transform does not reliably return all the marker lines. Instead, try finding all the image contours and filtering them by expected line geometry.
+The Hough Line Transform does not reliably return all the marker lines. Filtering contours by the expected marker line geometry isn't effective because marker lines may not be read as contours in the first place. Marker lines that appear solid can show gaps and breaks when magnified, and visible line segments may have width but zero height. Either of these issues prevent the `OpenCV` contour detection algorithm from detecting those visual features at all. This experiment evaluates the use of a morphological closing to emphasize the marker lines and deemphasize everything else. 
 
 #### 6 Method
-1) Find all the image contours
-2) Delete contours that don't match the expected line geometry
-3) Examine the remaining candidates
+1) Convolve the image with a [5, 1] px rectangular kernel
+2) Find all the contours in the resulting image
+3) Delete contours that don't match the expected line geometry
+4) Examine and filter the remaining candidates
 
 #### 6 Results
 Simply grabbing the image contours often returns a list that includes the marker lines, but not always. It's more reliable to perform a Morphological Closing with a horizontal line kernel. The closing operation convolves the kernel with the image, emphasizing contours that are already similar shapes to the kernel. Using a 5 by 1 px horiontal line kernel yeilds the following convolved image: the marker lines are the dominant contours which can be found reliably and further filtered for accuracy.
+
+| Fig. 9: The source image. |  Fig. 10: The image after a morpholical closing operation using a horizontal line kernel.
+| :-------------------------:|:-------------------------:
+| <img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/51_before_closing.png" alt="Fig. 9" />  | <img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/52_after_closing.png" alt="Fig. 10" />  |
 
 ### 7 Converting a One-Hot Dataframe to Category Strings
 The ACT Scoring Key tables label columns with an abbreviated category name. Those labels are easily transcribed as lists of strings. The marker x-positions must be mapped to a category label. This might be done using a dataframe.
