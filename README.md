@@ -6,14 +6,19 @@ The ACT exam contains questions from several different categories in each exam s
 ## Results
 ACT category information can be extracted from the printed scoring keys and written to a JSON file, and a python pipeline for doing so was written. The pipeline can be broadly broken into three parts: Image Processing, Mark Extraction, and Category Mapping. 
 
-The Image Processing is fairly straightforward and typical of an OMR operation. An image is loaded, orthogonalized, and binarized. An interesting addition is a morphological closing with horizontal line kernel. The closing emphasizes the desired horizontal line markers and deemphasizes everything else to improve contour detection.
 
-The category markers in the scoring key tables appear to be quadruple ASCII underscores forming horizontal lines roughly 30 pixels long and 1 pixel high. The extracted contours are filtered for the expected line geometry, reliably leaving an accurate list of marker contours. 
+## Discussion
+### Image Processing
+The Image Processing is fairly straightforward and typical of an OMR operation. An image is loaded, orthogonalized, and binarized. An interesting addition is a morphological closing with a horizontal line kernel. The closing emphasizes the desired horizontal line markers and deemphasizes everything else to improve contour detection.
 
-With the list of marker contours, an intricate process of aligning each mark to a row, column combo is performed. Unique x and y coordinates are obtained from the marker contours. The source images can experience pixel drift: marks in the same row or column may have slightly different (x,y) coordinates. Nearby values are collapsed into each other to generate a single x-value for each table column and a single y-value for each table row. The marker coordinates are finally overwritten by the nearest unique xy values, leaving markers that are integer-aligned to a table row (question number) and table column (category). For later use, indexing dictionaries are created by merging the unique x values with the category labels and unique y values with the question numbers. 
+### Mark Extraction
+The category markers in the scoring key tables appear to be quadruple ASCII underscores forming horizontal lines roughly 30 pixels long and 1 pixel high. All contours are extracted from the image, and the extracted contours are filtered for the expected line geometry, reliably yielding an accurate list of marker contours. 
+
+With the list of marker contours, an intricate process of aligning each mark to a specific row/column location is performed. The process of obtaining unique the x and y coordinates of a mark requires care. The source images can experience pixel drift: marks in the same row or column may have slightly different (x,y) coordinates. To acount for potential drift, nearby values are collapsed to generate a single x-value for each table column and a single y-value for each table row. A marker's coordinates are finally overwritten by the nearest unique xy values, leaving markers that are integer-aligned to a table row (question number) and table column (category). For later use, indexing dictionaries are created by merging the unique x values with the category labels and unique y values with the question numbers. 
 
 The above alignment procedure obviates the need to detect table column positions and bypasses much of the work required of Experiments 2, 3, and 4.
 
+### Category Mapping
 In the final phase of the pipeline, Category Mapping, the indexing dictionaries are used to create mappings between question numbers (keys) and category strings (values). The keys are formatted to be compatible with template variables from the `Jinja 2` templating engine. The resulting maps are ultimately used to inject the category strings into an appropriately formatted JSON string and written to a file.  
 
 
