@@ -36,8 +36,8 @@ Scoring Keys were found by finding the largest contours in the page. The locatio
 
 Solarized dark             |  Solarized Ocean
 :-------------------------:|:-------------------------:
-![Fig. 1](<img src="./images_display/11_e_contours.png" alt="figure" width="425"/>)  |  
-![Fig. 2](<img src="./images_display/12_e_score_box.png" />)
+![Fig. 1](<img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/11_e_contours.png" alt="figure" width="425"/>)  |  
+![Fig. 2](<img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/12_e_score_box.png" />)
 :-------------------------:|:-------------------------:
 Fig. 1: The scoring keys to an ACT English section. The red boxes indicate large contours that passed the initial filter.        | 
 Fig. 2: One of the scoring boxes subset from the page. 
