@@ -36,9 +36,9 @@ Scoring Keys were found by finding the largest contours in the page. The locatio
 
 
 
+Fig. 1: The scoring keys to an ACT English section. The red boxes indicate large contours that passed the initial filter.        |  Fig. 2: One of the scoring boxes subset from the page. 
 :-------------------------:|:-------------------------:
 <img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/11_e_contours.png" alt="Fig. 1" height="550" width="425"/>  | ![Fig. 2](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/12_e_score_box.png)
-Fig. 1: The scoring keys to an ACT English section. The red boxes indicate large contours that passed the initial filter.        |  Fig. 2: One of the scoring boxes subset from the page. 
 
 ### 2 Identifying Columns within the Scoring Keys
 Because OCR text extration has proven unreliable, I instead assume that columns are uniform within each Key, and I will use their positions and dimensions to locate features within each column. Each column is situated in its own rectangular box; it should be easy to locate each box as a contour. Columns have slightly different headings in the different test sections.
