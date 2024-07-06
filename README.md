@@ -32,7 +32,7 @@ The scoring keys are printed on the final pages of published ACT exams. Each key
 3) Visually inspect the candidates to determine the location and dimensions (in pixels) of the scoreing key boxes.
 
 #### Results
-Scoring Keys were found by finding the largest contours in the page. The location and dimensions of those contours were used to extract the Scoring Key from the page by subsetting the page's image (numpy array). For example, the first scoring box on any English key page is positioned at roughly (74, 223) pixels, has W, H dimensions of [164, 708], an area of roughly 11,600 px^2, and an aspect ratio of 0.23. With those paramaters, it is trivial to identify that scoring box and subset it from the 2D image tensor (numpy). 
+Scoring Keys were found by finding the largest contours in the page. The location and dimensions of those contours were used to extract the Scoring Key from the page by subsetting the page's image (numpy array). For example, the first scoring box on any English key page is positioned at roughly (74, 223) pixels, has W, H dimensions of [164, 708] px, an area of roughly 11,600 px<sup>2</sup>, and an aspect ratio of 0.23. With those paramaters, it is trivial to identify that scoring box and subset it from the 2D image tensor (numpy). 
 
 
 
