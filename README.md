@@ -65,7 +65,7 @@ The Box class contains position, dimensions, area, and aspect ratio. Various cla
 |                           |                                 
 :-------------------------:
 | <img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/21_column_contours.png" alt="Fig. 3" width="164" />  |
-|Fig. 3: Each red rectangle denotes a feature that is recognized by the scanner. The interior rectangles are recognized as columns; their horizontal positions are mapped to their headers: Nums, IOD, SIN, EMI. |
+|Fig. 3: Each red rectangle denotes a feature that is recognized by the scanner. The interior rectangles are recognized as columns; their horizontal positions are mapped to their headers: Key, IOD, SIN, EMI. |
 
 ### 3 Identifying Columns within the Math Scoring Keys
 Because the Math columns are separated by dotted lines, one cannot read them as contours. Instead, I created virtual contours by using the known values of x<sub>0</sub>, y<sub>0</sub>, w, h. y<sub>0</sub> and h may be obtained from the Key column, which is solid-bounded. x0 and w may be obtained from the solid-bounded heading boxes.
