@@ -112,9 +112,9 @@ All Scoring Keys have the same vertical stride: 16.66 px (12 pt + whitespace pad
 
 Identifying horizontal marker lines by a Hough Line Transform appears to fail regardless of the parameters used. Upon inspection, many of the line contours have zero height and small gaps among them. Filtering all the line contours may be a better way of extracting the marker lines.
 
-Fig. 7: The row positions may be determined in relation to the row numbers. An offset of 6 px and stride of 16.66 px centers the horizontal marker lines within each selection area. |  Fig. 8: Despite multiple attempts, marker lines could not be reliably detected by Hough transforms. |
-:-------------------------:|:-------------------------:|:-------------------------:
-<img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/41_row_positions.png" alt="Fig. 7" />  | <img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/42_hough_lines.png" alt="Fig. 8" />  |
+| Fig. 7: The row positions may be determined in relation to the row numbers. An offset of 6 px and stride of 16.66 px centers the horizontal marker lines within each selection area. |  Fig. 8: Despite multiple attempts, marker lines could not be reliably detected by Hough transforms. |
+| :-------------------------:|:-------------------------:
+| <img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/41_row_positions.png" alt="Fig. 7" />  | <img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/42_hough_lines.png" alt="Fig. 8" />  |
 
 ### 5 Extracting All ScoreKey Pages from a Single PDF
 Previous experiments have shown that the ScoreKey images (2 per page) can be extracted from a 1-page PDF, which contains the ScoreKeys for a single ACT section. It would be very convenient to use a single PDF containing the ScoreKeys for all the sections, rather than a collection of 4 single-page PDFs.
