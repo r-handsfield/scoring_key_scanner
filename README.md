@@ -142,7 +142,7 @@ Simply grabbing the image contours often returns a list that includes the marker
 
 | Fig. 9: The source image. |  Fig. 10: The image after a morpholical closing operation using a horizontal line kernel.
 | :-------------------------:|:-------------------------:
-| <img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/51_before_closing.png" alt="Fig. 9" />  | <img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/52_after_closing.png" alt="Fig. 10" />  |
+| <img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/51_before_closing.png" alt="Fig. 9" width="300" />  | <img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/52_after_closing.png" alt="Fig. 10" width="300" />  |
 
 ### 7 Converting a One-Hot Dataframe to Category Strings
 The ACT Scoring Key tables label columns with an abbreviated category name. Those labels are easily transcribed as lists of strings. The marker x-positions must be mapped to a category label. This might be done using a dataframe.
