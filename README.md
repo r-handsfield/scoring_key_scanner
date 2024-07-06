@@ -18,7 +18,7 @@ The category markers in the scoring key tables appear to be quadruple ASCII unde
 
 With the list of marker contours, an intricate process of aligning each mark to a specific row/column location is performed. The process of obtaining unique the x and y coordinates of a mark requires care. The source images can experience pixel drift at any stage of processing: marks in the same row or column may have slightly different (x,y) coordinates. To acount for potential drift, nearby values are collapsed to generate a single x-value for each table column and a single y-value for each table row. A marker's coordinates are finally overwritten by the nearest collapsed xy values, leaving markers that are integer-aligned to a table row (question number) and table column (category). For later use, indexing dictionaries are created by merging the unique x values with the category labels and unique y values with the question numbers. 
 
-The above alignment procedure obviates the need to detect table column positions and bypasses much of the work required of Experiments 2, 3, and 4.
+The above alignment procedure obviates the need to detect table column positions and bypasses much of the work of Experiments 2, 3, and 4.
 
 ### Category Mapping
 In the final phase of the pipeline, Category Mapping, the indexing dictionaries are used to create mappings between question numbers (keys) and category strings (values). The keys are formatted to be compatible with template variables from the `Jinja 2` templating engine. The resulting maps are then used to inject the category strings into an appropriately formatted JSON string and written to a file. 
@@ -39,7 +39,6 @@ Scoring Keys were found by finding the largest contours in the page. The locatio
 For example, the first scoring box on any English key page is positioned at roughly (74, 223) pixels, has W, H dimensions of [164, 708] px, an area of roughly 11,600 px<sup>2</sup>, and an aspect ratio of 0.23. 
 
 With those paramaters, it is trivial to identify that scoring box and subset it from the 2D image tensor. 
-
 
 
 Fig. 1: The scoring keys to an ACT English section. The red boxes indicate large contours that passed the initial filter.        |  Fig. 2: The first scoring box subset from the page. 
@@ -75,7 +74,7 @@ Because the Math columns are separated by dotted lines, one cannot read them as 
 2) Delete very small contours from the list of candidates
 3) Sort the remaining candidate contours left-to-right
 4) Inspect those to determine locating coordinates
-5) Obtain x<sub>0</sub>, y<sub>0</sub>, w, h the few solid-bounded columns
+5) Obtain x<sub>0</sub>, y<sub>0</sub>, w, h from the few solid-bounded columns/boxes
 6) From the inspected data, collect x<sub>0</sub>, y<sub>0</sub>, w, h, for the desired column
 7) Create a virtual contour by enclosing the collection in a doubly nested numpy array (the Open CV data structure)
 8) Inspect the real and virtual contours to determine the locating coordinates
@@ -103,8 +102,8 @@ Using a Scoring Key image, extract the row ordinals:
 3) Displace the rectangle by the v-stride unit, hoping to enclose the second ordinal
 4) Adjust the v-stride value until the rectangle consecutively lines up with each ordinal in the table
 
-Extract the category marks:
-1) Draw a rectangle the full width of the Scoring Key, at the first ordinal
+Locate the category marks:
+1) Draw a rectangle the full width of the Scoring Key, at the first ordinal:
 2) Adjust its starting y-position until it encloses the  category marks 
 3) Check that the previous v-stride works with all rows of category marks
 
@@ -112,6 +111,10 @@ Extract the category marks:
 All Scoring Keys have the same vertical stride: 16.66 px (12 pt + whitespace padding). A row/rectangle height of 16 px works pretty well, and the category marks are consistently offset by 6 px from the ordinal row position. Each row position can be determined by the triordinates `x<sub>0</sub>, y<sub>0</sub>, y<sub>M</sub>`, to distinguish between the ordinal _y_ and marker _y_ positions.
 
 Identifying horizontal marker lines by a Hough Line Transform appears to fail regardless of the parameters used. Upon inspection, many of the line contours have zero height and small gaps among them. Filtering all the line contours may be a better way of extracting the marker lines.
+
+Fig. 7: The row positions may be determined in relation to the row numbers. An offset of 6 px and stride of 16.66 px centers the horizontal marker lines within each selection area. |  Fig. 8: Despite multiple attempts, marker lines could not be reliably detected by Hough transforms. |
+:-------------------------:|:-------------------------:|:-------------------------:
+<img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/41_row_positions.png" alt="Fig. 7" />  | <img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/42_hough_lines.png" alt="Fig. 8" />  |
 
 ### 5 Extracting All ScoreKey Pages from a Single PDF
 Previous experiments have shown that the ScoreKey images (2 per page) can be extracted from a 1-page PDF, which contains the ScoreKeys for a single ACT section. It would be very convenient to use a single PDF containing the ScoreKeys for all the sections, rather than a collection of 4 single-page PDFs.

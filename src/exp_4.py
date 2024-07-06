@@ -64,7 +64,7 @@ x, y, w, h = box.x, box.y, box.w, box.h
 
 sk_image = pdf_image[y:y+h, x:x+w]
 gray = cv2.cvtColor(sk_image, cv2.COLOR_BGR2GRAY)
-bin = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)[1]
+binr = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)[1]
 inv = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)[1]
 
 # Find number/answer postions
@@ -120,6 +120,7 @@ for i in range(len(lines)):
     print(l)
 
     cv2.imshow("Lines from HoughLines", pic)
+    cv2.imwrite("/home/rh/Dev/scoring_key_scanner/images_display/42_hough.png", pic)
 
     # if cv2.waitKey(0) == 27:  # Esc will kill the display loop
     #     cv2.destroyAllWindows()
