@@ -62,7 +62,6 @@ During this experiment, it's become clear that a data structure is needed to rep
 
 The Box class contains position, dimensions, area, and aspect ratio. Various classes representing box-like visual features inherit from it: ScoreKey, Column, and Row
 
-|     sd                      |    asd     |                        
 :-------------------------:|:-------------------------:
 | ![Fig. 3](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/21_column_contours.png) | Fig. 3: Each red rectangle denotes a feature that is recognized by the scanner. The interior rectangles are recognized as columns; their horizontal positions are mapped to their headers: Nums, IOD, SIN, EMI. |
 
