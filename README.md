@@ -68,7 +68,7 @@ The Box class contains position, dimensions, area, and aspect ratio. Various cla
 |Fig. 3: Each red rectangle denotes a feature that is recognized by the scanner. The interior rectangles are recognized as columns; their horizontal positions are mapped to their headers: Key, IOD, SIN, EMI. |
 
 ### 3 Identifying Columns within the Math Scoring Keys
-Because the Math columns are separated by dotted lines, one cannot read them as contours. Instead, I created virtual contours by using the known values of x<sub>0</sub>, y<sub>0</sub>, w, h. y<sub>0</sub> and h may be obtained from the Key column, which is solid-bounded. x0 and w may be obtained from the solid-bounded heading boxes.
+Because the Math columns are separated by dotted lines, one cannot read them as contours. Instead, I created virtual contours by using the known values of x<sub>0</sub>, y<sub>0</sub>, w, h; y<sub>0</sub> and h may be obtained from the Key column, which is solid-bounded. x0 and w may be obtained from the solid-bounded heading boxes.
 
 #### 3 Method
 1) Extract the few closed contours from the Scoring Key image
@@ -82,6 +82,10 @@ Because the Math columns are separated by dotted lines, one cannot read them as 
 
 #### 3 Results
 Coordinates for all columns in all Scoring Keys were determined and recorded in `box_positions.py`. While this method assumes good rectilinear box features of uniform size on each page, the columns contain enough whitespace that it should still work on imperfect, scanned images. 
+
+Fig. 4: All contours detected within a Math scoring box; the columns in the PHM group are bounded by dotted lines.  |  Fig. 5: Due to the dashed lines, the PHM columns cannot be detected by filtering bounding contours. | Fig. 6: Creating virtual contours from known table features allows all the columns to be detected.
+:-------------------------:|:-------------------------:|:-------------------------:
+<img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/31_all_contours.png" alt="Fig. 4" />  | ![Fig. 5](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/32_actual_contours.png) |  ![Fig. 6](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/33_virtual_contours.png) |  
 
 ### 4 Identifying Rows within the Scoring Keys
 Each Scoring Key contains rows of several columns:
