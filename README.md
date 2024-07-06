@@ -36,7 +36,7 @@ Scoring Keys were found by finding the largest contours in the page. The locatio
 
 
 
-Fig. 1: The scoring keys to an ACT English section. The red boxes indicate large contours that passed the initial filter.        |  Fig. 2: The first scoring boxe subset from the page. 
+Fig. 1: The scoring keys to an ACT English section. The red boxes indicate large contours that passed the initial filter.        |  Fig. 2: The first scoring box subset from the page. 
 :-------------------------:|:-------------------------:
 <img src="https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/11_e_contours.png" alt="Fig. 1" height="550" width="425"/>  | ![Fig. 2](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/12_e_score_box.png)
 
