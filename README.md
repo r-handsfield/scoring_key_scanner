@@ -19,19 +19,28 @@ With the list of marker contours, an intricate process of aligning each mark to 
 The above alignment procedure obviates the need to detect table column positions and bypasses much of the work required of Experiments 2, 3, and 4.
 
 ### Category Mapping
-In the final phase of the pipeline, Category Mapping, the indexing dictionaries are used to create mappings between question numbers (keys) and category strings (values). The keys are formatted to be compatible with template variables from the `Jinja 2` templating engine. The resulting maps are ultimately used to inject the category strings into an appropriately formatted JSON string and written to a file.  
+In the final phase of the pipeline, Category Mapping, the indexing dictionaries are used to create mappings between question numbers (keys) and category strings (values). The keys are formatted to be compatible with template variables from the `Jinja 2` templating engine. The resulting maps are ultimately used to inject the category strings into an appropriately formatted JSON string and written to a file. 
 
 
 ## Experiments
 ### 1 Extracting a Scoring Key from a Page
-The scoring keys are printed on the final pages of published ACT exams. Each key is consists of 2 large rectangular boxes and appears to be in the same page location on each different exam. The source pdf used for this experiment was compiled from a digital source and is orthogonally aligned and high quality.
+The scoring keys are printed on the final pages of published ACT exams. Each key is consists of 2 large rectangular boxes and appears to be in the same page location on each different exam. The source pdf used for this experiment was compiled from a digital source and is orthogonally aligned and high quality. As seen in Figure 1, the scoring key to a single ACT section is displayed as a pair of boxes in the upper left corner of the page.
 
+#### Method
 1) Extract all the closed contours from the page
-2) Sort the contours by size and keep the 5 largest candidates
+2) Sort the contours by size and keep the candidates with the largest areas
 3) Visually inspect the candidates to determine the location and dimensions (in pixels) of the scoreing key boxes.
 
-#### Exp 1 Results
-Scoring Keys were found by finding the largest contours in the page. The location and dimensions of those contours were used to extract the Scoring Key from the page by subsetting the page's image (numpy array).
+#### Results
+Scoring Keys were found by finding the largest contours in the page. The location and dimensions of those contours were used to extract the Scoring Key from the page by subsetting the page's image (numpy array). For example, the first scoring box on any English key page is positioned at roughly (74, 223) pixels, has W, H dimensions of [164, 708], an area of roughly 11,600 px^2, and an aspect ratio of 0.23. With those paramaters, it is trivial to identify that scoring box and subset it from the 2D image tensor (numpy). 
+
+Solarized dark             |  Solarized Ocean
+:-------------------------:|:-------------------------:
+![Fig. 1](<img src="./images_display/11_e_contours.png" alt="figure" width="425"/>)  |  
+![Fig. 2](<img src="./images_display/12_e_score_box.png" />)
+:-------------------------:|:-------------------------:
+Fig. 1: The scoring keys to an ACT English section. The red boxes indicate large contours that passed the initial filter.        | 
+Fig. 2: One of the scoring boxes subset from the page. 
 
 ### 2 Identifying Columns within the Scoring Keys
 Because OCR text extration has proven unreliable, I instead assume that columns are uniform within each Key, and I will use their positions and dimensions to locate features within each column. Each column is situated in its own rectangular box; it should be easy to locate each box as a contour. Columns have slightly different headings in the different test sections.
