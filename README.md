@@ -8,9 +8,9 @@ It is not practical to manually create a machine readable object for each set of
 ## Results
 ACT category information can be extracted from the printed scoring keys and written to a JSON file, and a python pipeline for doing so was written. The pipeline can be broadly broken into three parts: Image Processing, Mark Extraction, and Category Mapping. 
 
-Scoring marks extracted from an ACT scoring box. | Machine-readable category annotations generated from the scoring marks.
-:-------------------------:|:-------------------------:
-![Scoring Marks](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/01_r1_markers.png)  | ![Scoring Categories](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/02_r1_categories.png)
+An ACT Scoring Box | Scoring marks extracted from the Scoring Box. | Machine-readable category annotations generated from the scoring marks.
+ :-------------------------:|:-------------------------:|:-------------------------:
+ ![Scoring Marks](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/00_r1_score_box.png)  |  ![Scoring Marks](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/01_r1_markers.png)  |  ![Scoring Categories](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/02_r1_categories.png)
 
 
 ## Discussion
