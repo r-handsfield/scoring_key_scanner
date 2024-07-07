@@ -158,8 +158,7 @@ From a list of marker bounding boxes
 #### 7 Results
 The dataframe is indispensable for comparing category assignments to the original table. However, performing the various conversion and processing steps through the dataframe seems unnecessary. Working with dictionary maps might be better. 
 
-                Category Dataframe
-                ------------------
+#####                Category Dataframe
 
 |    |   N   |   A   |   F   |   G   |   S   |  IES  |  MDL  |
 |----|-------|-------|-------|-------|-------|-------|-------|
