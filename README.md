@@ -138,7 +138,7 @@ The Hough Line Transform does not reliably return all the marker lines. Filterin
 4) Examine and filter the remaining candidates
 
 #### 6 Results
-Simply grabbing the image contours often returns a list that includes the marker lines, but not always. It's more reliable to perform a Morphological Closing with a horizontal line kernel. The closing operation convolves the kernel with the image, emphasizing contours that are already similar shapes to the kernel. Using a 5 by 1 px horiontal line kernel yeilds the following convolved image: the marker lines are the dominant contours which can be found reliably and further filtered for accuracy.
+Simply grabbing the image contours often returns a list that includes the marker lines, but not always. It's more reliable to perform a Morphological Closing with a horizontal line kernel. The closing operation convolves the kernel with the image, emphasizing contours that are already similar shapes to the kernel. Using a 5 by 1 px horiontal line kernel yields the convolved image in Figure 10: the marker lines are the dominant contours; they can be reliably located and further filtered for accuracy.
 
 | Fig. 9: The source image. |  Fig. 10: The image after a morpholical closing operation using a horizontal line kernel.
 | :-------------------------:|:-------------------------:
@@ -158,6 +158,41 @@ From a list of marker bounding boxes
 #### 7 Results
 The dataframe is indispensable for comparing category assignments to the original table. However, performing the various conversion and processing steps through the dataframe seems unnecessary. Working with dictionary maps might be better. 
 
-###Errata & Unused
+                Category Dataframe
+                ------------------
+
+        N      A      F      G      S    IES    MDL
+1   False  False  False   True  False  False  False
+2   False  False  False  False  False   True   True
+3   False  False  False  False  False   True  False
+4   False  False  False  False  False   True  False
+5   False  False  False  False  False   True  False
+6   False  False  False   True  False  False  False
+7   False  False  False  False   True  False   True
+8   False  False  False  False  False   True  False
+9   False  False   True  False  False  False  False
+10  False  False   True  False  False  False   True
+11  False  False  False  False  False   True  False
+12  False  False   True  False  False  False  False
+13  False  False  False  False  False   True  False
+14  False  False  False  False   True  False  False
+15   True  False  False  False  False  False  False
+16  False  False   True  False  False  False  False
+17  False  False  False   True  False  False  False
+18   True  False  False  False  False  False  False
+19  False  False  False   True  False  False   True
+20  False  False  False  False   True  False  False
+21  False  False  False  False  False   True   True
+22  False  False  False  False   True  False  False
+23  False   True  False  False  False  False  False
+24  False  False  False  False  False   True  False
+25  False  False  False  False   True  False   True
+26  False  False   True  False  False  False  False
+27  False   True  False  False  False  False  False
+28  False   True  False  False  False  False  False
+29  False  False  False  False  False   True  False
+30  False  False  False  False  False   True  False
+
+### Errata & Unused
 
 Recent available exams are high quality PDF files, while older exams are scans of printed sheets. 

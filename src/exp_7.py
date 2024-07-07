@@ -89,7 +89,7 @@ for i, l in enumerate(lines):
 
 ### DataFrame Version ######################################################
 # 
-# This version builds dataframes and interates through them to match the
+# This version builds dataframes and iterates through them to match the
 # marker position to a question and category.
 
 # Use the dict to build a dataframe for easy viewing & operations
