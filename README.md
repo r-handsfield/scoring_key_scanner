@@ -12,10 +12,10 @@ An ACT Scoring Box | Scoring marks extracted from the Scoring Box. | Machine-rea
  :-------------------------:|:-------------------------:|:-------------------------:
  ![Scoring Marks](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/00_r1_score_box.png)  |  ![Scoring Marks](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/01_r1_markers.png)  |  ![Scoring Categories](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/02_r1_categories.png)
 
-## Instructions
-(1) Clone the repository
-(2) Install the python packages from `environment.yml`
-(3) $ python pipeline.py -tc 123456 -p path/to/pdf/file.pdf
+## Usage
+1. Clone the repository
+2. Install the python packages from `environment.yml`
+3. $ python pipeline.py -tc 123456 -p path/to/pdf/file.pdf
 
 The pipeline requires 2 arguments:
 (1) An ACT test code in yyyymm format
