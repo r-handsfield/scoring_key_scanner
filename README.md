@@ -161,37 +161,40 @@ The dataframe is indispensable for comparing category assignments to the origina
                 Category Dataframe
                 ------------------
 
-        N      A      F      G      S    IES    MDL
-1   False  False  False   True  False  False  False
-2   False  False  False  False  False   True   True
-3   False  False  False  False  False   True  False
-4   False  False  False  False  False   True  False
-5   False  False  False  False  False   True  False
-6   False  False  False   True  False  False  False
-7   False  False  False  False   True  False   True
-8   False  False  False  False  False   True  False
-9   False  False   True  False  False  False  False
-10  False  False   True  False  False  False   True
-11  False  False  False  False  False   True  False
-12  False  False   True  False  False  False  False
-13  False  False  False  False  False   True  False
-14  False  False  False  False   True  False  False
-15   True  False  False  False  False  False  False
-16  False  False   True  False  False  False  False
-17  False  False  False   True  False  False  False
-18   True  False  False  False  False  False  False
-19  False  False  False   True  False  False   True
-20  False  False  False  False   True  False  False
-21  False  False  False  False  False   True   True
-22  False  False  False  False   True  False  False
-23  False   True  False  False  False  False  False
-24  False  False  False  False  False   True  False
-25  False  False  False  False   True  False   True
-26  False  False   True  False  False  False  False
-27  False   True  False  False  False  False  False
-28  False   True  False  False  False  False  False
-29  False  False  False  False  False   True  False
-30  False  False  False  False  False   True  False
+|    |   N   |   A   |   F   |   G   |   S   |  IES  |  MDL  |
+|----|-------|-------|-------|-------|-------|-------|-------|
+| 1  | False | False | False | True  | False | False | False |
+| 2  | False | False | False | False | False | True  | True  |
+| 3  | False | False | False | False | False | True  | False |
+| 4  | False | False | False | False | False | True  | False |
+| 5  | False | False | False | False | False | True  | False |
+| 6  | False | False | False | True  | False | False | False |
+| 7  | False | False | False | False | True  | False | True  |
+| 8  | False | False | False | False | False | True  | False |
+| 9  | False | False | True  | False | False | False | False |
+| 10 | False | False | True  | False | False | False | True  |
+| 11 | False | False | False | False | False | True  | False |
+| 12 | False | False | True  | False | False | False | False |
+| 13 | False | False | False | False | False | True  | False |
+| 14 | False | False | False | False | True  | False | False |
+| 15 | True  | False | False | False | False | False | False |
+| 16 | False | False | True  | False | False | False | False |
+| 17 | False | False | False | True  | False | False | False |
+| 18 | True  | False | False | False | False | False | False |
+| 19 | False | False | False | True  | False | False | True  |
+| 20 | False | False | False | False | True  | False | False |
+| 21 | False | False | False | False | False | True  | True  |
+| 22 | False | False | False | False | True  | False | False |
+| 23 | False | True  | False | False | False | False | False |
+| 24 | False | False | False | False | False | True  | False |
+| 25 | False | False | False | False | True  | False | True  |
+| 26 | False | False | True  | False | False | False | False |
+| 27 | False | True  | False | False | False | False | False |
+| 28 | False | True  | False | False | False | False | False |
+| 29 | False | False | False | False | False | True  | False |
+| 30 | False | False | False | False | False | True  | False |
+
+
 
 ### Errata & Unused
 
