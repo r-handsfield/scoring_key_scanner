@@ -1,1 +1,1 @@
-Depending on how the unit tests are run, some of the tests may images for visual confirmation. If this happens, press Esc, potentially dozens of times, to close the image window. Closing the image window by clicking its titlebar may freeze your terminal session. 
+Depending on how the unit tests are run, some of the tests may generate images for visual confirmation. If this happens, press Esc, potentially dozens of times, to close the image window. Closing the image window by clicking its titlebar may freeze your terminal session. 
