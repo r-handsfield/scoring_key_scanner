@@ -15,7 +15,7 @@ An ACT Scoring Box | Scoring marks extracted from the Scoring Box. | Machine-rea
 ## Usage
 1. Clone the repository
 2. Install the python packages from `environment.yml`
-3. $ python pipeline.py -tc 123456 -p path/to/pdf/file.pdf
+3. Run  `python pipeline.py -tc 123456 -p path/to/pdf/file.pdf`
 
 The pipeline requires 2 arguments:
 (1) An ACT test code in yyyymm format
