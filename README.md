@@ -10,7 +10,7 @@ ACT category information can be extracted from the printed scoring keys and writ
 
 Scoring marks extracted from an ACT scoring box. | Machine-readable category annotations generated from the scoring marks.
 :-------------------------:|:-------------------------:
-![Scoring Marks](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/01_r1_markers.png)  | ![Scoring Categories](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/12_e_score_box.png)
+![Scoring Marks](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/01_r1_markers.png)  | ![Scoring Categories](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/02_r1_categories.png)
 
 
 ## Discussion
