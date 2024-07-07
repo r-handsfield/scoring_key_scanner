@@ -107,7 +107,7 @@ for code in ('e', 'm', 'r', 's'):
                 break
             cv2.destroyAllWindows()
         
-        sys.exit()
+        # sys.exit()
         markers = sk.extract_markers(contours)
 
         # debugging loop

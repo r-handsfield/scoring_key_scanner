@@ -8,6 +8,10 @@ It is not practical to manually create a machine readable object for each set of
 ## Results
 ACT category information can be extracted from the printed scoring keys and written to a JSON file, and a python pipeline for doing so was written. The pipeline can be broadly broken into three parts: Image Processing, Mark Extraction, and Category Mapping. 
 
+Scoring marks extracted from an ACT scoring box. | Machine-readable category annotations generated from the scoring marks.
+:-------------------------:|:-------------------------:
+![Scoring Marks](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/01_r1_markers.png)  | ![Scoring Categories](https://github.com/r-handsfield/scoring_key_scanner/blob/master/images_display/12_e_score_box.png)
+
 
 ## Discussion
 ### Image Processing
@@ -157,6 +161,7 @@ From a list of marker bounding boxes
 
 #### 7 Results
 The dataframe is indispensable for comparing category assignments to the original table. However, performing the various conversion and processing steps through the dataframe seems unnecessary. Working with dictionary maps might be better. 
+
 
 #####                Category Dataframe
 
