@@ -18,7 +18,6 @@ from imutils.contours import sort_contours
 sys.path.append('./classes')
 from classes.dewarper import Dewarper
 from classes.deshadower import Deshadower
-from classes.sheetScanner import Sheet
 from scoreKey import Box, Marker, ScoreKey, Column
 from sheetUtilities import SheetUtilities
 
