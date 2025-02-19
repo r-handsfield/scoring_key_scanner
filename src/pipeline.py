@@ -76,12 +76,15 @@ score_keys['m'] = ScoreKey('m', images['m'])
 score_keys['r'] = ScoreKey('r', images['r'])
 score_keys['s'] = ScoreKey('s', images['s'])
 
-for code in ('e', 'm', 'r', 's'):
-    cv2.imshow(f'{code}1', score_keys[code].images[0])
-    cv2.imshow(f'{code}2', score_keys[code].images[1])
-    if cv2.waitKey(0) == 27:
-        break
-cv2.destroyAllWindows()
+show_images = False  # Control Flag for viewing intermediate images
+
+if show_images:
+	for code in ('e', 'm', 'r', 's'):
+		cv2.imshow(f'{code}1', score_keys[code].images[0])
+		cv2.imshow(f'{code}2', score_keys[code].images[1])
+		if cv2.waitKey(0) == 27:
+		    break
+	cv2.destroyAllWindows()
 
 
 ### Find all category marks in the Scoring Box images
@@ -101,26 +104,28 @@ for code in ('e', 'm', 'r', 's'):
 
             pic = sk.images[i].copy()
             cv2.drawContours(pic, [c], -1, (0,0,255), 1)
-            cv2.imshow("Contour", pic)
-            if cv2.waitKey(0) == 27:
-                break
+            
+            if show_images:
+    	        cv2.imshow("Contour", pic)
+    	        if cv2.waitKey(0) == 27:
+    	            break
             cv2.destroyAllWindows()
         
         # sys.exit()
         markers = sk.extract_markers(contours)
 
         # debugging loop
-        for j, c in enumerate(markers):
-            x,y,w,h = cv2.boundingRect(c)
-            area = w*h
-            aspect = round(float(w)/h, 3)
-            print(f"x:{x}  y:{y}  w:{w}  h:{h}  area:{area}  aspect:{aspect}")
-            pic = sk.images[i].copy()
-            cv2.drawContours(pic, [c], -1, (0,0,255), 1)
-            cv2.imshow("Marker", pic)
-            if cv2.waitKey(0) == 27:
-                break
-            cv2.destroyAllWindows()
+        # for j, c in enumerate(markers):
+        #     x,y,w,h = cv2.boundingRect(c)
+        #     area = w*h
+        #     aspect = round(float(w)/h, 3)
+        #     print(f"x:{x}  y:{y}  w:{w}  h:{h}  area:{area}  aspect:{aspect}")
+        #     pic = sk.images[i].copy()
+        #     cv2.drawContours(pic, [c], -1, (0,0,255), 1)
+        #     cv2.imshow("Marker", pic)
+        #     if cv2.waitKey(0) == 27:
+        #         break
+        #     cv2.destroyAllWindows()
         
         markers = [Marker(c) for c in markers] # Unordered list
 
@@ -175,6 +180,7 @@ for code in ('e', 'm', 'r', 's'):
         lines = [m.contour for m in markers]
         cv2.drawContours(pic, lines, -1, (0,0,255), 1)
         cv2.imshow(f"{code}{i+1} Markers", pic)
+        print("\nPress ESCAPE \n")
         cv2.waitKey(0) 
     cv2.destroyAllWindows()
 
