@@ -1,4 +1,4 @@
-name: test_scorer
+name: sk_scanner
 channels:
   - conda-forge
   - defaults
