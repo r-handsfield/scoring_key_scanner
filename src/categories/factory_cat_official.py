@@ -89,7 +89,7 @@ def generate_section(sid, numQ, comma=True):
         m += sp12 + '"cse" : "Conventions of Standard English"\n'
         m += sp8 + '},\n\n'
 
-        m += sp8 + '"passage-breaks":["1", "16", "31", "46", "61"],\n\n'
+        m += sp8 + '"passage_breaks":["1", "16", "31", "46", "61"],\n\n'
 
     elif sid == 'm':
         m += sp8 + '"reporting_categories":{\n'
@@ -103,7 +103,7 @@ def generate_section(sid, numQ, comma=True):
         m += sp12 + '"mdl" : "Modeling"\n'
         m += sp8 + '},\n\n'
 
-        m += sp8 + '"passage-breaks":["1", "21", "41"],\n\n'
+        m += sp8 + '"passage_breaks":["1", "21", "41"],\n\n'
         
 
     elif sid == 'r':
@@ -126,7 +126,7 @@ def generate_section(sid, numQ, comma=True):
         m += sp12 + '"4":["ns"]\n'
         m += sp8 + '},\n\n'
 
-        m += sp8 + '"passage-breaks":["1", "11", "21", "31"],\n\n'
+        m += sp8 + '"passage_breaks":["1", "11", "21", "31"],\n\n'
 
 
         
@@ -150,7 +150,7 @@ def generate_section(sid, numQ, comma=True):
         m += sp21 + '"6":["", ""]\n'
         m += sp19 + '},\n\n'
 
-        m += sp8 + '"passage-breaks":["1", "", "", "", "", ""],\n\n'
+        m += sp8 + '"passage_breaks":["1", "", "", "", "", ""],\n\n'
 
 
     m += generate_questions(sid, numQ)

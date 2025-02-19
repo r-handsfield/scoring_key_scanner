@@ -8,7 +8,7 @@
             "cse" : "Conventions of Standard English"
         },
 
-        "passage-breaks":["1", "16", "31", "46", "61"],
+        "passage_breaks":["1", "16", "31", "46", "61"],
 
         "q":{
               "1": { "cat":[{{ eC1 }}] },
@@ -101,7 +101,7 @@
             "mdl" : "Modeling"
         },
 
-        "passage-breaks":["1", "21", "41"],
+        "passage_breaks":["1", "21", "41"],
 
         "q":{
               "1": { "cat":[{{ mC1 }}] },
@@ -187,7 +187,7 @@
             "4":["ns"]
         },
 
-        "passage-breaks":["1", "11", "21", "31"],
+        "passage_breaks":["1", "11", "21", "31"],
 
         "q":{
               "1": { "cat":[{{ rC1 }}] },
@@ -253,7 +253,7 @@
                      "6":["", ""]
                    },
 
-        "passage-breaks":["1", "", "", "", "", ""],
+        "passage_breaks":["1", "", "", "", "", ""],
 
         "q":{
               "1": { "cat":[{{ sC1 }}] },
