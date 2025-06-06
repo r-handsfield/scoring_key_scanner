@@ -120,7 +120,7 @@ Locate the category marks:
 3) Check that the previous v-stride works with all rows of category marks
 
 #### 4 Results
-All Scoring Keys have the same vertical stride: 16.66 px (12 pt + whitespace padding). A row/rectangle height of 16 px works pretty well, and the category marks are consistently offset by 6 px from the ordinal row position. Each row position can be determined by the triordinates `x<sub>0</sub>, y<sub>0</sub>, y<sub>M</sub>`, to distinguish between the ordinal _y_ and marker _y_ positions.
+All Scoring Keys have the same vertical stride: 16.66 px (12 pt + whitespace padding). A row/rectangle height of 16 px works pretty well, and the category marks are consistently offset by 6 px from the ordinal row position. Each row position can be determined by the triordinates x<sub>0</sub>, y<sub>0</sub>, y<sub>M</sub>, to distinguish between the ordinal _y_ and marker _y_ positions.
 
 Identifying horizontal marker lines by a Hough Line Transform appears to fail regardless of the parameters used. Upon inspection, many of the line contours have zero height and small gaps among them. Filtering all the line contours may be a better way of extracting the marker lines.
 
