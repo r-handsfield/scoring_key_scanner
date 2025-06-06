@@ -67,7 +67,7 @@ Because OCR text extration has proven unreliable, I instead assume that columns 
 4) Inspect those to determine the locating coordinates
 
 #### 2 Results
-By subsetting, Column regions were extracted from the English, Reading, and Math Scoring Keys. The Math Scoring Keys contain columns separated by dotted lines rather solid, so those columns' contours cannot be read. A different method is needed.
+By subsetting, Column regions were extracted from the English, Reading, and Math Scoring Keys. The Math Scoring Keys contain columns separated by dotted lines rather than solid, so those columns' contours cannot be read. A different method is needed.
 
 During this experiment, it's become clear that a data structure is needed to represent each Scoring Key box. It's time to write a class.
 
