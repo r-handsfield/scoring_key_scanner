@@ -11,13 +11,17 @@ from os.path import join, abspath
 from dataclasses import dataclass
 from pdf2image import convert_from_path
 from imutils.contours import sort_contours
+from jinja2 import Environment, FileSystemLoader
 
 
 sys.path.append('./classes')
 from classes.dewarper import Dewarper
 from classes.deshadower import Deshadower
+from classes.sheetScanner import Sheet
 from scoreKey import Box, Marker, ScoreKey, Column
 from sheetUtilities import SheetUtilities
+
+FLAG_SHOW_IMAGES = False  # show intermediate images -- for debugging
 
 util = SheetUtilities()
 
@@ -74,15 +78,13 @@ score_keys['m'] = ScoreKey('m', images['m'])
 score_keys['r'] = ScoreKey('r', images['r'])
 score_keys['s'] = ScoreKey('s', images['s'])
 
-show_images = False  # Control Flag for viewing intermediate images
-
-if show_images:
-	for code in ('e', 'm', 'r', 's'):
-		cv2.imshow(f'{code}1', score_keys[code].images[0])
-		cv2.imshow(f'{code}2', score_keys[code].images[1])
-		if cv2.waitKey(0) == 27:
-		    break
-	cv2.destroyAllWindows()
+if FLAG_SHOW_IMAGES:  # show the orthogonalized source tables
+    for code in ('e', 'm', 'r', 's'):
+        cv2.imshow(f'{code}1', score_keys[code].images[0])
+        cv2.imshow(f'{code}2', score_keys[code].images[1])
+        if cv2.waitKey(0) == 27:
+            break
+    cv2.destroyAllWindows()
 
 
 ### Find all category marks in the Scoring Box images
@@ -100,30 +102,28 @@ for code in ('e', 'm', 'r', 's'):
             aspect = round(float(w)/h, 5)
             print(f"{j}\tx:{x}, y:{y}, w:{w}, h:{h}, area:{area}, aspect:{aspect}")
 
-            pic = sk.images[i].copy()
-            cv2.drawContours(pic, [c], -1, (0,0,255), 1)
-            
-            if show_images:
-    	        cv2.imshow("Contour", pic)
-    	        if cv2.waitKey(0) == 27:
-    	            break
-            cv2.destroyAllWindows()
+            if FLAG_SHOW_IMAGES:
+                pic = sk.images[i].copy()
+                cv2.drawContours(pic, [c], -1, (0,0,255), 1)
+                cv2.imshow("Contour", pic)
+                if cv2.waitKey(0) == 27:
+                    break
+                cv2.destroyAllWindows()
         
-        # sys.exit()
         markers = sk.extract_markers(contours)
 
         # debugging loop
-        # for j, c in enumerate(markers):
-        #     x,y,w,h = cv2.boundingRect(c)
-        #     area = w*h
-        #     aspect = round(float(w)/h, 3)
-        #     print(f"x:{x}  y:{y}  w:{w}  h:{h}  area:{area}  aspect:{aspect}")
-        #     pic = sk.images[i].copy()
-        #     cv2.drawContours(pic, [c], -1, (0,0,255), 1)
-        #     cv2.imshow("Marker", pic)
-        #     if cv2.waitKey(0) == 27:
-        #         break
-        #     cv2.destroyAllWindows()
+        for j, c in enumerate(markers):
+            x,y,w,h = cv2.boundingRect(c)
+            area = w*h
+            aspect = round(float(w)/h, 3)
+            print(f"x:{x}  y:{y}  w:{w}  h:{h}  area:{area}  aspect:{aspect}")
+            pic = sk.images[i].copy()
+            cv2.drawContours(pic, [c], -1, (0,0,255), 1)
+            cv2.imshow("Marker", pic)
+            if cv2.waitKey(0) == 27:
+                break
+            cv2.destroyAllWindows()
         
         markers = [Marker(c) for c in markers] # Unordered list
 
@@ -178,7 +178,6 @@ for code in ('e', 'm', 'r', 's'):
         lines = [m.contour for m in markers]
         cv2.drawContours(pic, lines, -1, (0,0,255), 1)
         cv2.imshow(f"{code}{i+1} Markers", pic)
-        print("\nPress ESCAPE \n")
         cv2.waitKey(0) 
     cv2.destroyAllWindows()
 
@@ -214,7 +213,6 @@ for k,v in all_template_values.items():
     print(k,v)
 
 ### Insert 
-from jinja2 import Environment, FileSystemLoader
 env = Environment(loader=FileSystemLoader('./categories'))
 template = env.get_template( "cat_ACT_Official.json" )
 json_string = template.render(all_template_values)
@@ -226,7 +224,10 @@ with open(outfile, 'w') as f:
     f.write(json_string)
 
 
-sys.exit()
+sys.exit()  
+### End Pipeline.
+
+### Archival code follows
 
 
 ### Build DataFrame to hold Category Values
