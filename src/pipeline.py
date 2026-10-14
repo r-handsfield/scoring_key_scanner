@@ -7,6 +7,7 @@ import pickle
 import argparse
 import numpy as np
 import pandas as pd
+import pytesseract as pt
 from os.path import join, abspath
 from dataclasses import dataclass
 from pdf2image import convert_from_path
