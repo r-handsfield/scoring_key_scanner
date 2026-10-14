@@ -9,7 +9,6 @@ import numpy as np
 import pandas as pd
 from os.path import join, abspath
 from dataclasses import dataclass
-import pytesseract as pt
 from pytesseract import Output
 from pdf2image import convert_from_path
 from imutils.contours import sort_contours
